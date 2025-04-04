@@ -1,19 +1,35 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Register</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Online Store - Register</title>
   <link rel="stylesheet" href="assets/css/common.css" />
   <link rel="stylesheet" href="assets/css/index.css" />
 </head>
 <body>
   <div class="container">
-    <h2>Register</h2>
-    <input type="email" id="register-email" placeholder="Email" />
-    <input type="password" id="register-password" placeholder="Password" />
-    <button id="register-btn">Register</button>
-    <p id="register-message"></p>
-    <p>Already have an account? <a href="index.html">Login here</a></p>
+    <!-- Trang chủ có logo hoặc hình ảnh -->
+    <div class="hero">
+      <img src="images/store-hero.jpg" alt="Store Image" class="hero-image" />
+      <h1>Welcome to Our Online Store</h1>
+      <p>Join us to start shopping and enjoy amazing deals!</p>
+    </div>
+
+    <!-- Màn hình đăng ký -->
+    <div class="login-box">
+      <h2>Register</h2>
+      <form id="register-form">
+        <input type="email" id="register-email" placeholder="Email" required />
+        <input type="password" id="register-password" placeholder="Password" required />
+        <input type="password" id="register-confirm-password" placeholder="Confirm Password" required />
+        <button type="submit" id="register-btn">Register</button>
+        <p id="register-message"></p>
+      </form>
+      <p>Already have an account? <a href="index.html">Login here</a></p>
+    </div>
   </div>
-  <script type="module" src="assets/js/register.js"></script>
+
+  <script type="module" src="assets/js/auth.js"></script>
 </body>
 </html>
