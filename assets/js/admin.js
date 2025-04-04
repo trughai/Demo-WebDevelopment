@@ -1,50 +1,67 @@
-import { auth, db } from "./firebase-config.js";
-import { signOut } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
-import { addDoc, collection, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+import { auth } from "./firebase-config.js";
+import { signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+import { getFirestore, collection, getDocs, updateDoc, doc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
-// Kiểm tra quyền Admin
-async function checkAdminRole() {
-  const user = auth.currentUser;
+const db = getFirestore();
+
+let userRole = "";  // Để lưu role người dùng hiện tại
+
+// Kiểm tra trạng thái đăng nhập
+onAuthStateChanged(auth, async (user) => {
   if (user) {
-    const userDoc = await getDoc(doc(db, "users", user.uid));
-    if (userDoc.exists()) {
-      const userData = userDoc.data();
-      if (userData.role === "admin") {
-        document.getElementById("add-user-btn").disabled = false;
-      } else {
-        alert("You do not have admin privileges.");
-        window.location.href = "index.html";
+    const uid = user.uid;
+    const userRef = doc(db, "users", uid);
+    const docSnap = await getDoc(userRef);
+    if (docSnap.exists()) {
+      userRole = docSnap.data().role;
+      if (userRole !== 'admin') {
+        alert("You do not have permission to access this page.");
+        window.location.href = "index.html";  // Chuyển hướng về trang login nếu không phải admin
       }
+    } else {
+      console.log("No such document!");
     }
+  } else {
+    window.location.href = "index.html";  // Chuyển hướng về trang login nếu chưa đăng nhập
   }
-}
+});
 
-// Đăng xuất người dùng
 document.getElementById("logout-btn").addEventListener("click", async () => {
   await signOut(auth);
   window.location.href = "index.html";
 });
 
-// Thêm người dùng vào Firestore
 document.getElementById("add-user-btn").addEventListener("click", async () => {
   const username = document.getElementById("new-username").value;
   const role = document.getElementById("new-role").value;
 
   if (username && role) {
-    await addDoc(collection(db, "users"), {
-      username: username,
-      role: role
-    });
-
     const row = document.createElement("tr");
     row.innerHTML = `
       <td>${username}</td>
       <td>${role}</td>
-      <td><button onclick="this.parentElement.parentElement.remove()">Delete</button></td>
+      <td>
+        <button onclick="updateRole('${username}')">Update Role</button>
+        <button onclick="deleteUser('${username}')">Delete</button>
+      </td>
     `;
     document.getElementById("user-table").appendChild(row);
   }
 });
 
-// Kiểm tra quyền admin khi trang Admin được tải
-checkAdminRole();
+// Hàm để cập nhật vai trò
+async function updateRole(username) {
+  const role = prompt("Enter new role for " + username);
+  if (role) {
+    const userRef = doc(db, "users", username);
+    await updateDoc(userRef, { role });
+    alert("Role updated to " + role);
+  }
+}
+
+// Hàm xóa người dùng
+async function deleteUser(username) {
+  const userRef = doc(db, "users", username);
+  await deleteDoc(userRef);
+  alert("User deleted");
+}
