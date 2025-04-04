@@ -1,5 +1,4 @@
-import { auth } from "./firebase-config.js";
-import { signOut } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+import { auth, db, collection, addDoc, getDocs } from "./firebase-config.js";
 
 // Đăng xuất người dùng
 document.getElementById("logout-btn").addEventListener("click", async () => {
@@ -7,28 +6,53 @@ document.getElementById("logout-btn").addEventListener("click", async () => {
   window.location.href = "index.html";
 });
 
-// Xử lý sự kiện click nút "Add User"
-document.getElementById("add-user-btn").addEventListener("click", () => {
+// Thêm người dùng vào Firestore
+document.getElementById("add-user-btn").addEventListener("click", async () => {
   const username = document.getElementById("new-username").value;
   const role = document.getElementById("new-role").value;
 
-  // Kiểm tra nếu cả 2 trường đều có giá trị
   if (username && role) {
-    console.log("Adding user:", username, "Role:", role); // Debugging console log
+    try {
+      // Thêm người dùng vào Firestore
+      await addDoc(collection(db, "users"), {
+        username: username,
+        role: role
+      });
 
-    // Tạo dòng mới trong bảng để hiển thị người dùng
+      // Hiển thị dòng người dùng mới trong bảng
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${username}</td>
+        <td>${role}</td>
+        <td><button onclick="this.parentElement.parentElement.remove()">Delete</button></td>
+      `;
+      document.getElementById("user-table").appendChild(row);
+
+      // Xóa giá trị input sau khi thêm
+      document.getElementById("new-username").value = '';
+      document.getElementById("new-role").value = '';
+    } catch (error) {
+      console.error("Error adding user: ", error);
+    }
+  } else {
+    alert("Please fill in both fields!");
+  }
+});
+
+// Hiển thị người dùng từ Firestore khi trang được tải lại
+document.addEventListener("DOMContentLoaded", async () => {
+  const querySnapshot = await getDocs(collection(db, "users"));
+  const tableBody = document.getElementById("user-table");
+
+  // Hiển thị tất cả người dùng đã lưu trong Firestore
+  querySnapshot.forEach((doc) => {
+    const user = doc.data();
     const row = document.createElement("tr");
     row.innerHTML = `
-      <td>${username}</td>
-      <td>${role}</td>
+      <td>${user.username}</td>
+      <td>${user.role}</td>
       <td><button onclick="this.parentElement.parentElement.remove()">Delete</button></td>
     `;
-    document.getElementById("user-table").appendChild(row);
-
-    // Xóa giá trị input sau khi thêm
-    document.getElementById("new-username").value = '';
-    document.getElementById("new-role").value = '';
-  } else {
-    alert("Please fill in both fields!"); // Thông báo nếu thiếu thông tin
-  }
+    tableBody.appendChild(row);
+  });
 });
