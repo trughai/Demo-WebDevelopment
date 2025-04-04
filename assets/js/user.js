@@ -95,19 +95,42 @@ document.getElementById("place-order-btn").addEventListener("click", async () =>
     };
 
     // Lưu đơn hàng vào Firestore
-    await addDoc(collection(db, "orders"), orderData);
+    const orderDoc = await addDoc(collection(db, "orders"), orderData);
 
     alert("Your order has been placed successfully!");
-    loadOrders();  // Tải lại đơn hàng của người dùng
+
+    // Cập nhật lại danh sách đơn hàng ngay lập tức mà không cần tải lại trang
+    const newOrder = {
+      id: orderDoc.id,
+      ...orderData
+    };
+    displayOrder(newOrder);
 
     // Đóng modal
     orderModal.style.display = "none";
+
   } catch (error) {
     alert("Failed to place the order: " + error.message);
   }
 });
 
 // Hiển thị đơn hàng của người dùng
+function displayOrder(order) {
+  const orderList = document.getElementById("order-list");
+  const li = document.createElement("li");
+
+  li.innerHTML = `
+    <strong>${order.productName}</strong><br>
+    Price: ${order.productPrice} <br>
+    Shipping Address: ${order.shippingAddress}<br>
+    Status: ${order.status} <br>
+    <img src="${order.productImage}" alt="${order.productName}" width="100" />
+  `;
+
+  orderList.appendChild(li);
+}
+
+// Hiển thị tất cả đơn hàng của người dùng
 async function loadOrders() {
   const user = auth.currentUser;
 
@@ -121,15 +144,11 @@ async function loadOrders() {
   querySnapshot.forEach((docSnap) => {
     const data = docSnap.data();
     if (data.userId === user.uid) {
-      const li = document.createElement("li");
-      li.innerHTML = `
-        <strong>${data.productName}</strong><br>
-        Price: ${data.productPrice} <br>
-        Shipping Address: ${data.shippingAddress}<br>
-        Status: ${data.status} <br>
-        <img src="${data.productImage}" alt="${data.productName}" width="100" />
-      `;
-      orderList.appendChild(li);
+      const order = {
+        id: docSnap.id,
+        ...data
+      };
+      displayOrder(order);
     }
   });
 }
