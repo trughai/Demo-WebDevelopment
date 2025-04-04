@@ -11,9 +11,21 @@
     <button id="logout-btn">Logout</button>
     <h3>Product List</h3>
     <ul id="product-list"></ul>
+
+    <!-- Modal để nhập địa chỉ -->
+    <div id="order-modal" class="modal">
+      <div class="modal-content">
+        <h3>Enter Shipping Address</h3>
+        <div id="order-info"></div>
+        <input type="text" id="shipping-address" placeholder="Enter your address" />
+        <button id="place-order-btn">Place Order</button>
+        <button id="cancel-order-btn">Cancel</button>
+      </div>
+    </div>
+
     <h3>Your Orders</h3>
     <ul id="order-list"></ul>
-    <script type="module" src="assets/js/user.js"></script>
   </div>
+  <script type="module" src="assets/js/user.js"></script>
 </body>
 </html>

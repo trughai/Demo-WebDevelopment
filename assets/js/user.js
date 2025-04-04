@@ -28,13 +28,52 @@ async function loadProducts() {
       const productPrice = btn.getAttribute("data-price");
       const productImage = btn.getAttribute("data-image");
 
-      await placeOrder(productId, productName, productPrice, productImage);
+      openOrderModal(productId, productName, productPrice, productImage);
     });
   });
 }
 
+// Hiển thị modal để người dùng nhập địa chỉ
+function openOrderModal(productId, productName, productPrice, productImage) {
+  const orderModal = document.getElementById("order-modal");
+  const orderInfo = document.getElementById("order-info");
+  
+  // Hiển thị thông tin sản phẩm trong modal
+  orderInfo.innerHTML = `
+    <strong>${productName}</strong><br>
+    Price: ${productPrice}<br>
+    <img src="${productImage}" alt="${productName}" width="100" />
+  `;
+
+  orderModal.style.display = "block";
+
+  // Lưu lại thông tin sản phẩm vào data-modal
+  orderModal.setAttribute("data-product-id", productId);
+  orderModal.setAttribute("data-product-name", productName);
+  orderModal.setAttribute("data-product-price", productPrice);
+  orderModal.setAttribute("data-product-image", productImage);
+}
+
+// Đóng modal khi nhấn "Cancel"
+document.getElementById("cancel-order-btn").addEventListener("click", () => {
+  document.getElementById("order-modal").style.display = "none";
+});
+
 // Đặt hàng
-async function placeOrder(productId, productName, productPrice, productImage) {
+document.getElementById("place-order-btn").addEventListener("click", async () => {
+  const orderModal = document.getElementById("order-modal");
+  const address = document.getElementById("shipping-address").value.trim();
+
+  if (!address) {
+    alert("Please enter your shipping address.");
+    return;
+  }
+
+  const productId = orderModal.getAttribute("data-product-id");
+  const productName = orderModal.getAttribute("data-product-name");
+  const productPrice = orderModal.getAttribute("data-product-price");
+  const productImage = orderModal.getAttribute("data-product-image");
+
   const user = auth.currentUser;
 
   if (!user) {
@@ -50,6 +89,7 @@ async function placeOrder(productId, productName, productPrice, productImage) {
       productName,
       productPrice,
       productImage,
+      shippingAddress: address,
       status: "pending",  // Trạng thái đơn hàng
       createdAt: new Date()
     };
@@ -58,11 +98,14 @@ async function placeOrder(productId, productName, productPrice, productImage) {
     await addDoc(collection(db, "orders"), orderData);
 
     alert("Your order has been placed successfully!");
-    loadOrders();
+    loadOrders();  // Tải lại đơn hàng của người dùng
+
+    // Đóng modal
+    orderModal.style.display = "none";
   } catch (error) {
     alert("Failed to place the order: " + error.message);
   }
-}
+});
 
 // Hiển thị đơn hàng của người dùng
 async function loadOrders() {
@@ -82,6 +125,7 @@ async function loadOrders() {
       li.innerHTML = `
         <strong>${data.productName}</strong><br>
         Price: ${data.productPrice} <br>
+        Shipping Address: ${data.shippingAddress}<br>
         Status: ${data.status} <br>
         <img src="${data.productImage}" alt="${data.productName}" width="100" />
       `;
