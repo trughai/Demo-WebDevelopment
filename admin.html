@@ -7,17 +7,14 @@
   <link rel="stylesheet" href="assets/css/admin.css" />
 </head>
 <body>
-  <div class="admin-container">
+  <div class="container">
     <h2>Admin Panel</h2>
-    <div class="task-container">
-      <h3>Add New Task</h3>
-      <input type="text" id="task-name" placeholder="Task Name" />
-      <textarea id="task-description" placeholder="Task Description"></textarea>
-      <button id="add-task-btn">Add Task</button>
-      <p id="task-message"></p>
-    </div>
+    <button id="logout-btn">Logout</button>
+    <input type="text" id="task-title" placeholder="Task Title" />
+    <input type="text" id="assigned-to" placeholder="Assign to UID" />
+    <button id="add-task-btn">Add Task</button>
+    <ul id="task-list"></ul>
   </div>
-
   <script type="module" src="assets/js/admin.js"></script>
 </body>
 </html>

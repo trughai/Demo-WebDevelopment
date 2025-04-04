@@ -1,7 +1,6 @@
-// register.js
 import { auth, db } from "./firebase-config.js";
 import { createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
-import { setDoc, doc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+import { doc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
 document.getElementById("register-btn").addEventListener("click", async () => {
   const email = document.getElementById("register-email").value;
@@ -10,16 +9,13 @@ document.getElementById("register-btn").addEventListener("click", async () => {
 
   try {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-    const user = userCredential.user;
-
-    await setDoc(doc(db, "users", user.uid), {
-      email: email,
-      role: 'user' // Mặc định là user
+    await setDoc(doc(db, "users", userCredential.user.uid), {
+      email,
+      role: "user"
     });
-
-    message.textContent = "Registration successful!";
-    setTimeout(() => window.location.href = "index.html", 2000);
+    message.textContent = "Registered successfully!";
+    window.location.href = "index.html";
   } catch (error) {
-    message.textContent = "Registration failed: " + error.message;
+    message.textContent = "Failed: " + error.message;
   }
 });

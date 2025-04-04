@@ -1,73 +1,38 @@
-/* user.css */
 body {
     font-family: Arial, sans-serif;
-    background-color: #f0f4f8;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+    background-color: #f9fafb;
+    padding: 40px;
   }
-  
-  .user-container {
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 80%;
-    max-width: 800px;
-    padding: 20px;
+  .container {
+    max-width: 600px;
+    margin: 0 auto;
+    background: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
   }
-  
-  h2 {
-    text-align: center;
-    color: #333;
-  }
-  
-  button {
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    font-size: 16px;
-    cursor: pointer;
-    border-radius: 5px;
-    margin: 10px 0;
-    transition: background-color 0.3s ease;
-  }
-  
-  button:hover {
-    background-color: #45a049;
-  }
-  
-  h3 {
-    text-align: center;
-    margin-bottom: 20px;
-    color: #333;
-  }
-  
   ul {
-    list-style-type: none;
-    padding: 0;
+    margin-top: 20px;
   }
-  
   li {
-    background-color: #f9f9f9;
-    padding: 12px;
-    margin: 10px 0;
-    border-radius: 5px;
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
     display: flex;
     justify-content: space-between;
-    align-items: center;
   }
-  
-  li.completed {
+  .completed {
     text-decoration: line-through;
-    background-color: #d4edda;
+    color: gray;
   }
-  
-  li input {
-    margin-left: 10px;
+  button {
+    padding: 6px 10px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 6px;
     cursor: pointer;
+  }
+  button:hover {
+    background-color: #1e7e34;
   }
   

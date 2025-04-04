@@ -1,43 +1,36 @@
 import { auth, db } from "./firebase-config.js";
-import {
-  collection,
-  query,
-  where,
-  onSnapshot,
-  updateDoc,
-  doc,
-} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+import { signOut } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+import { collection, getDocs, updateDoc, doc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
-auth.onAuthStateChanged((user) => {
-  if (user) {
-    const uid = user.uid;
-    const q = query(collection(db, "tasks"), where("assignedTo", "==", uid));
-    const taskList = document.getElementById("task-list");
+document.getElementById("logout-btn").addEventListener("click", async () => {
+  await signOut(auth);
+  window.location.href = "index.html";
+});
 
-    onSnapshot(q, (snapshot) => {
-      taskList.innerHTML = "";
+const user = auth.currentUser;
+const taskList = document.getElementById("task-list");
 
-      snapshot.forEach((docSnap) => {
-        const task = docSnap.data();
-        const li = document.createElement("li");
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
 
-        const checkbox = document.createElement("input");
-        checkbox.type = "checkbox";
-        checkbox.checked = task.completed;
+onAuthStateChanged(auth, async (user) => {
+  if (!user) return;
 
-        checkbox.addEventListener("change", async () => {
-          const taskRef = doc(db, "tasks", docSnap.id);
-          await updateDoc(taskRef, {
-            completed: checkbox.checked,
-          });
+  const querySnapshot = await getDocs(collection(db, "tasks"));
+  querySnapshot.forEach(async (docSnap) => {
+    const task = docSnap.data();
+    if (task.assignedTo === user.uid) {
+      const li = document.createElement("li");
+      const checkbox = document.createElement("input");
+      checkbox.type = "checkbox";
+      checkbox.checked = task.completed;
+      checkbox.addEventListener("change", async () => {
+        await updateDoc(doc(db, "tasks", docSnap.id), {
+          completed: checkbox.checked
         });
-
-        li.textContent = `${task.title} - ${task.description}`;
-        li.prepend(checkbox);
-        taskList.appendChild(li);
       });
-    });
-  } else {
-    window.location.href = "login.html";
-  }
+      li.textContent = task.title + " ";
+      li.appendChild(checkbox);
+      taskList.appendChild(li);
+    }
+  });
 });
