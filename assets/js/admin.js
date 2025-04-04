@@ -28,8 +28,8 @@ addProductBtn.addEventListener("click", async () => {
   try {
     // Tải ảnh lên Firebase Storage
     const storageRef = ref(storage, `products/${productImage.name}`);
-    await uploadBytes(storageRef, productImage);
-    const imageUrl = await getDownloadURL(storageRef);
+    const uploadResult = await uploadBytes(storageRef, productImage);
+    const imageUrl = await getDownloadURL(uploadResult.ref);
 
     // Lưu thông tin sản phẩm vào Firestore
     const productRef = await addDoc(collection(db, "products"), {
