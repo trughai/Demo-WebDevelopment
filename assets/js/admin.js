@@ -1,68 +1,46 @@
 import { auth, db } from "./firebase-config.js";
 import { signOut } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
-import { collection, getDocs, updateDoc, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+import { collection, addDoc, getDocs, query, where } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
+// Lắng nghe trạng thái đăng nhập của người dùng
+auth.onAuthStateChanged(async (user) => {
+  if (!user) {
+    window.location.href = "index.html"; // Nếu chưa đăng nhập, chuyển hướng về trang login
+    return;
+  }
+
+  // Chỉ admin mới có quyền thêm người dùng
+  const usersCollection = collection(db, "users");
+  const q = query(usersCollection, where("role", "==", "admin"));
+  const querySnapshot = await getDocs(q);
+  if (querySnapshot.empty) {
+    alert("You do not have admin privileges.");
+    window.location.href = "index.html"; // Nếu không phải admin, chuyển hướng về trang login
+  }
+});
+
+// Đăng xuất
 document.getElementById("logout-btn").addEventListener("click", async () => {
   await signOut(auth);
-  window.location.href = "index.html";
+  window.location.href = "index.html"; // Chuyển hướng về trang login
 });
 
-document.addEventListener("DOMContentLoaded", async () => {
-  // Kiểm tra người dùng có phải là Admin hay không
-  const user = auth.currentUser;
-  if (user) {
-    const userDoc = await getDoc(doc(db, "users", user.uid));
-    if (userDoc.exists() && userDoc.data().role !== "Admin") {
-      alert("You do not have permission to access this page.");
-      window.location.href = "index.html";
-      return;
+// Thêm người dùng
+document.getElementById("add-user-btn").addEventListener("click", async () => {
+  const username = document.getElementById("new-username").value;
+  const role = document.getElementById("new-role").value;
+
+  if (username && role) {
+    try {
+      await addDoc(collection(db, "users"), {
+        username: username,
+        role: role,
+      });
+      alert("User added successfully");
+    } catch (error) {
+      alert("Error adding user: " + error.message);
     }
   } else {
-    alert("You need to log in first.");
-    window.location.href = "index.html";
-    return;
+    alert("Please enter a username and role.");
   }
-
-  const querySnapshot = await getDocs(collection(db, "users"));
-  const userTable = document.getElementById("user-table");
-
-  querySnapshot.forEach((doc) => {
-    const user = doc.data();
-    const row = document.createElement("tr");
-    row.innerHTML = `
-      <td>${user.email}</td>
-      <td>${user.role}</td>
-      <td>
-        <button onclick="changeRole('${doc.id}')">Change Role</button>
-        <button onclick="deleteUser('${doc.id}')">Delete</button>
-      </td>
-    `;
-    userTable.appendChild(row);
-  });
 });
-
-// Thay đổi vai trò người dùng
-async function changeRole(docId) {
-  const newRole = prompt("Enter new role (Admin/User):");
-  if (newRole !== "Admin" && newRole !== "User") {
-    alert("Invalid role.");
-    return;
-  }
-
-  const userRef = doc(db, "users", docId);
-  await updateDoc(userRef, {
-    role: newRole
-  });
-  alert("Role updated successfully.");
-  window.location.reload();  // Tải lại trang để cập nhật danh sách
-}
-
-// Xóa người dùng
-async function deleteUser(docId) {
-  const confirmDelete = confirm("Are you sure you want to delete this user?");
-  if (confirmDelete) {
-    await deleteDoc(doc(db, "users", docId));
-    alert("User deleted successfully.");
-    window.location.reload();  // Tải lại trang để cập nhật danh sách
-  }
-}
