@@ -1,42 +1,34 @@
 // auth.js
 import { auth, db } from "./firebase-config.js";
-import { createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
-import { doc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+import { doc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
-document.getElementById("register-btn").addEventListener("click", async () => {
-  const email = document.getElementById("register-email").value.trim();
-  const password = document.getElementById("register-password").value.trim();
-  const confirmPassword = document.getElementById("register-confirm-password").value.trim();
-  const msg = document.getElementById("register-message");
-
-  // Kiểm tra mật khẩu và xác nhận mật khẩu
-  if (password !== confirmPassword) {
-    msg.textContent = "Mật khẩu và xác nhận mật khẩu không khớp.";
-    return;
-  }
+document.getElementById("login-btn").addEventListener("click", async () => {
+  const email = document.getElementById("login-email").value.trim();
+  const password = document.getElementById("login-password").value.trim();
+  const msg = document.getElementById("login-message");
 
   try {
-    // Tạo người dùng mới bằng Firebase Authentication
-    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-    const user = userCredential.user;
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    const uid = userCredential.user.uid;
 
-    // Lưu thông tin người dùng vào Firestore
-    const userDocRef = doc(db, "users", user.uid);
-    await setDoc(userDocRef, {
-      email: email,
-      role: "user",  // Vai trò mặc định là 'user'
-    });
+    const userDocRef = doc(db, "users", uid);
+    const userDoc = await getDoc(userDocRef);
 
-    // Thông báo thành công
-    msg.textContent = "Tạo tài khoản thành công! Bạn có thể đăng nhập ngay bây giờ.";
-    
-    // Sau 2 giây, chuyển hướng người dùng đến trang đăng nhập
-    setTimeout(() => {
-      window.location.href = "index.html";
-    }, 2000);
-    
+    if (!userDoc.exists()) {
+      msg.textContent = "Tài khoản chưa được cấp quyền truy cập.";
+      return;
+    }
+
+    const role = userDoc.data().role;
+    if (role === "admin") {
+      window.location.href = "admin.html";
+    } else if (role === "user") {
+      window.location.href = "user.html";
+    } else {
+      msg.textContent = "Vai trò không hợp lệ.";
+    }
   } catch (err) {
-    // Hiển thị thông báo lỗi nếu tạo tài khoản thất bại
-    msg.textContent = "Đăng ký không thành công: " + err.message;
+    msg.textContent = "Login failed: " + err.message;
   }
 });
