@@ -2,18 +2,19 @@ import { auth, db } from "./firebase-config.js";
 import { signOut } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
 import { getDoc, doc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
-// Kiểm tra trạng thái đăng nhập và quyền truy cập
+// Kiểm tra trạng thái đăng nhập khi vào trang admin
 const checkAdmin = async () => {
-  const user = auth.currentUser;  // Kiểm tra xem người dùng đã đăng nhập chưa
+  const user = auth.currentUser;  // Kiểm tra người dùng đã đăng nhập chưa
   if (user) {
+    // Kiểm tra quyền admin của người dùng
     const userRef = doc(db, "users", user.uid);
     const docSnap = await getDoc(userRef);
-    
+
     if (docSnap.exists()) {
       const userData = docSnap.data();
       if (userData.role !== "admin") {
         alert("You do not have permission to access this page.");
-        window.location.href = "index.html";  // Chuyển hướng ra trang đăng nhập nếu không phải admin
+        window.location.href = "index.html";  // Chuyển hướng ra trang login nếu không phải admin
       }
     }
   } else {
