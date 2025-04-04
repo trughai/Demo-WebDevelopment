@@ -1,64 +1,94 @@
-import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
-import { getAuth } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-storage.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  getDocs,
+  updateDoc,
+  deleteDoc,
+  doc,
+  getDoc,
+} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+import {
+  getAuth,
+  onAuthStateChanged,
+  signOut
+} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+import {
+  getStorage,
+  ref,
+  uploadBytes,
+  getDownloadURL
+} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-storage.js";
 
-// Firebase initialization
-const db = getFirestore();
+// --- Firebase config ---
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT_ID.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
+};
+
+// --- Init ---
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 const auth = getAuth();
-const storage = getStorage();
+const storage = getStorage(app);
 
-// DOM elements
+// --- Auth check: chỉ admin mới vào được ---
+onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    const userDoc = await getDoc(doc(db, "users", user.uid));
+    if (!userDoc.exists() || userDoc.data().role !== "admin") {
+      alert("Bạn không có quyền truy cập trang admin.");
+      window.location.href = "index.html";
+    }
+  } else {
+    window.location.href = "index.html";
+  }
+});
+
+// --- Thêm sản phẩm ---
 const addProductBtn = document.getElementById("add-product-btn");
-const productNameInput = document.getElementById("product-name");
-const productPriceInput = document.getElementById("product-price");
-const productImageInput = document.getElementById("product-image");
 
-// Handle Add Product button click
 addProductBtn.addEventListener("click", async () => {
-  const productName = productNameInput.value.trim();
-  const productPrice = productPriceInput.value.trim();
-  const productImage = productImageInput.files[0];
+  const name = document.getElementById("product-name").value.trim();
+  const price = document.getElementById("product-price").value.trim();
+  const imageFile = document.getElementById("product-image").files[0];
 
-  // Kiểm tra xem tất cả các trường có dữ liệu chưa
-  if (!productName || !productPrice || !productImage) {
-    alert("Please fill in all fields and upload an image.");
+  if (!name || !price || !imageFile) {
+    alert("Vui lòng nhập đầy đủ thông tin sản phẩm và chọn hình ảnh.");
     return;
   }
 
   try {
-    // Tải ảnh lên Firebase Storage
-    const storageRef = ref(storage, `products/${productImage.name}`);
-    const uploadResult = await uploadBytes(storageRef, productImage);
-    const imageUrl = await getDownloadURL(uploadResult.ref);
+    const imageRef = ref(storage, `products/${Date.now()}_${imageFile.name}`);
+    const snapshot = await uploadBytes(imageRef, imageFile);
+    const imageUrl = await getDownloadURL(snapshot.ref);
 
-    // Lưu thông tin sản phẩm vào Firestore
-    const productRef = await addDoc(collection(db, "products"), {
-      name: productName,
-      price: productPrice,
-      imageUrl: imageUrl,
+    await addDoc(collection(db, "products"), {
+      name,
+      price,
+      imageUrl,
       createdAt: new Date(),
     });
 
-    alert("Product added successfully!");
-    
-    // Reset form fields
-    productNameInput.value = "";
-    productPriceInput.value = "";
-    productImageInput.value = "";
-    
+    alert("Thêm sản phẩm thành công!");
+
+    // Reset form
+    document.getElementById("product-name").value = "";
+    document.getElementById("product-price").value = "";
+    document.getElementById("product-image").value = "";
   } catch (error) {
-    console.error("Error adding product: ", error);
-    alert("Failed to add product. Please try again.");
+    console.error("Lỗi thêm sản phẩm:", error);
+    alert("Thêm sản phẩm thất bại.");
   }
 });
 
-// Handle Logout button click
+// --- Đăng xuất ---
 document.getElementById("logout-btn").addEventListener("click", async () => {
-  try {
-    await signOut(auth);
-    window.location.href = "index.html";
-  } catch (error) {
-    console.error("Error signing out: ", error);
-    alert("Failed to log out. Please try again.");
-  }
+  await signOut(auth);
+  window.location.href = "index.html";
 });
