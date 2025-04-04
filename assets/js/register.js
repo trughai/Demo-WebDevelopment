@@ -11,10 +11,11 @@ document.getElementById("register-btn").addEventListener("click", async () => {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
 
-    // Save user data to Firestore
+    // Gán vai trò cho người dùng, mặc định là 'User'
     await addDoc(collection(db, "users"), {
       uid: user.uid,
       email: user.email,
+      role: "User",  // Gán vai trò 'User' khi đăng ký (có thể thay đổi khi cần)
       createdAt: new Date(),
     });
 
