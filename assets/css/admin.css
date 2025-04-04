@@ -1,38 +1,58 @@
+body {
+  background-color: #f2f7ff;
+}
+
 .admin-container {
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    width: 60%;
+  width: 100%;
+  max-width: 500px;
+  padding: 20px;
 }
+
+h2 {
+  font-size: 28px;
+  color: #333;
+  margin-bottom: 30px;
+}
+
+button.logout-btn {
+  background-color: #dc3545;
+  color: white;
+  font-size: 16px;
+  margin-bottom: 20px;
+}
+
+button.logout-btn:hover {
+  background-color: #c82333;
+}
+
+.add-user {
+  margin-bottom: 20px;
+}
+
+.add-user input {
+  width: 48%;
+  margin-right: 4%;
+}
+
 table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
 }
-th, td {
-    border: 1px solid #ddd;
-    padding: 10px;
-    text-align: left;
+
+table th,
+table td {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
 }
-th {
-    background-color: #007bff;
-    color: white;
+
+button {
+  background-color: #ffc107;
+  color: white;
+  font-size: 14px;
 }
-.delete-btn {
-    background-color: #dc3545;
-    color: white;
-}
-.delete-btn:hover {
-    background-color: #c82333;
-}
-.logout-btn {
-    margin-top: 20px;
-    padding: 10px;
-    background-color: #28a745;
-    color: white;
-}
-.logout-btn:hover {
-    background-color: #218838;
+
+button:hover {
+  background-color: #e0a800;
 }

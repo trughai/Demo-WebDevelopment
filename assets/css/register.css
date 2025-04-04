@@ -1,0 +1,30 @@
+body {
+    background-color: #e6ffe6;
+  }
+  
+  .container {
+    width: 100%;
+    max-width: 350px;
+    padding: 20px;
+  }
+  
+  h2 {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 30px;
+  }
+  
+  input[type="text"],
+  input[type="password"] {
+    font-size: 16px;
+  }
+  
+  button {
+    background-color: #28a745;
+    font-size: 16px;
+  }
+  
+  a {
+    color: #28a745;
+  }
+  
