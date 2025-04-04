@@ -1,45 +1,34 @@
-// admin.js
-import { auth, db } from "./firebase-config.js";
-import { signOut } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
-import { doc, setDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+import { db } from "./firebase-config.js";  // Đảm bảo bạn đã import db từ firebase-config.js
+import { addDoc, collection } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
-document.getElementById("logout-btn").addEventListener("click", async () => {
-  await signOut(auth);
-  window.location.href = "index.html"; // Quay lại trang đăng nhập
-});
-
-// Thêm công việc mới
+// Gán sự kiện cho nút "Add Task"
 document.getElementById("add-task-btn").addEventListener("click", async () => {
   const taskName = document.getElementById("task-name").value;
+  const taskDescription = document.getElementById("task-description").value;
+  const message = document.getElementById("task-message");
 
-  if (taskName) {
-    await setDoc(doc(db, "tasks", taskName), {
-      name: taskName,
-      completed: false,
-      assignedTo: null // Chưa giao cho ai
-    });
-
-    alert("Task added successfully!");
-    location.reload(); // Tải lại trang sau khi thêm công việc
+  // Kiểm tra nếu các thông tin đã được nhập
+  if (taskName && taskDescription) {
+    try {
+      // Thêm công việc vào Firestore
+      await addDoc(collection(db, "tasks"), {
+        name: taskName,
+        description: taskDescription,
+        completed: false,
+        createdAt: new Date(),
+      });
+      
+      message.textContent = "Task added successfully!";
+      message.style.color = "green";
+      // Xóa nội dung form sau khi thêm task
+      document.getElementById("task-name").value = "";
+      document.getElementById("task-description").value = "";
+    } catch (error) {
+      message.textContent = "Failed to add task: " + error.message;
+      message.style.color = "red";
+    }
   } else {
-    alert("Please provide a task name!");
+    message.textContent = "Please fill in both fields!";
+    message.style.color = "red";
   }
 });
-
-// Hiển thị công việc
-async function getTasks() {
-  const tasksCollection = collection(db, "tasks");
-  const taskSnapshot = await getDocs(tasksCollection);
-  const taskList = document.getElementById("task-list");
-
-  taskSnapshot.forEach(doc => {
-    const task = doc.data();
-    const taskItem = document.createElement("li");
-    taskItem.textContent = task.name;
-    taskItem.style.textDecoration = task.completed ? "line-through" : "none";
-
-    taskList.appendChild(taskItem);
-  });
-}
-
-getTasks();

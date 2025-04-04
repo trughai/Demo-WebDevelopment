@@ -9,19 +9,15 @@
 <body>
   <div class="admin-container">
     <h2>Admin Panel</h2>
-    <button id="logout-btn">Logout</button>
-
-    <div class="add-task">
-      <h3>Add Task</h3>
+    <div class="task-container">
+      <h3>Add New Task</h3>
       <input type="text" id="task-name" placeholder="Task Name" />
+      <textarea id="task-description" placeholder="Task Description"></textarea>
       <button id="add-task-btn">Add Task</button>
-    </div>
-
-    <div class="task-list">
-      <h3>Task List</h3>
-      <ul id="task-list"></ul>
+      <p id="task-message"></p>
     </div>
   </div>
+
   <script type="module" src="assets/js/admin.js"></script>
 </body>
 </html>
