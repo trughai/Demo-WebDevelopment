@@ -1,64 +1,64 @@
-import { auth, db, storage } from "./firebase-config.js";
-import { signOut } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
-import { collection, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
-import { ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-storage.js";
+import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-storage.js";
 
-document.getElementById("logout-btn").addEventListener("click", async () => {
-  await signOut(auth);
-  window.location.href = "index.html";
+// Firebase initialization
+const db = getFirestore();
+const auth = getAuth();
+const storage = getStorage();
+
+// DOM elements
+const addProductBtn = document.getElementById("add-product-btn");
+const productNameInput = document.getElementById("product-name");
+const productPriceInput = document.getElementById("product-price");
+const productImageInput = document.getElementById("product-image");
+
+// Handle Add Product button click
+addProductBtn.addEventListener("click", async () => {
+  const productName = productNameInput.value.trim();
+  const productPrice = productPriceInput.value.trim();
+  const productImage = productImageInput.files[0];
+
+  // Kiểm tra xem tất cả các trường có dữ liệu chưa
+  if (!productName || !productPrice || !productImage) {
+    alert("Please fill in all fields and upload an image.");
+    return;
+  }
+
+  try {
+    // Tải ảnh lên Firebase Storage
+    const storageRef = ref(storage, `products/${productImage.name}`);
+    await uploadBytes(storageRef, productImage);
+    const imageUrl = await getDownloadURL(storageRef);
+
+    // Lưu thông tin sản phẩm vào Firestore
+    const productRef = await addDoc(collection(db, "products"), {
+      name: productName,
+      price: productPrice,
+      imageUrl: imageUrl,
+      createdAt: new Date(),
+    });
+
+    alert("Product added successfully!");
+    
+    // Reset form fields
+    productNameInput.value = "";
+    productPriceInput.value = "";
+    productImageInput.value = "";
+    
+  } catch (error) {
+    console.error("Error adding product: ", error);
+    alert("Failed to add product. Please try again.");
+  }
 });
 
-// Fetch users from Firestore
-const fetchUsers = async () => {
-  const querySnapshot = await getDocs(collection(db, "users"));
-  const userList = document.getElementById("user-list-ul");
-  userList.innerHTML = ""; // Clear the list before displaying
-
-  querySnapshot.forEach((doc) => {
-    const li = document.createElement("li");
-    li.textContent = `${doc.data().email} - Role: ${doc.data().role}`;
-    const deleteBtn = document.createElement("button");
-    deleteBtn.textContent = "Delete";
-    deleteBtn.addEventListener("click", async () => {
-      await updateDoc(doc.ref, { role: "deleted" });
-      fetchUsers();
-    });
-    li.appendChild(deleteBtn);
-    userList.appendChild(li);
-  });
-};
-
-fetchUsers();
-
-// Add Product with Image Upload
-document.getElementById("add-product-btn").addEventListener("click", async () => {
-  const productName = document.getElementById("product-name").value;
-  const productPrice = document.getElementById("product-price").value;
-  const productImage = document.getElementById("product-image").files[0];
-
-  if (productImage) {
-    // Create a reference to the Firebase Storage location
-    const imageRef = ref(storage, "products/" + productImage.name);
-
-    try {
-      // Upload the image to Firebase Storage
-      await uploadBytes(imageRef, productImage);
-
-      // Get the download URL of the image
-      const imageURL = await getDownloadURL(imageRef);
-
-      // Save the product to Firestore
-      await addDoc(collection(db, "products"), {
-        name: productName,
-        price: parseFloat(productPrice),
-        image: imageURL
-      });
-
-      alert("Product added successfully!");
-    } catch (error) {
-      console.error("Error adding product: ", error);
-    }
-  } else {
-    alert("Please select an image for the product.");
+// Handle Logout button click
+document.getElementById("logout-btn").addEventListener("click", async () => {
+  try {
+    await signOut(auth);
+    window.location.href = "index.html";
+  } catch (error) {
+    console.error("Error signing out: ", error);
+    alert("Failed to log out. Please try again.");
   }
 });
