@@ -1,86 +1,83 @@
-/* admin.css */
-
-.admin-container {
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: 20px;
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+/* Đảm bảo body có padding và căn giữa nội dung */
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: #f4f4f4;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-.admin-container h2 {
+/* Căn giữa container và thêm padding cho nó */
+.container {
+  width: 80%;
+  margin: 0 auto;
+  padding-top: 20px;
   text-align: center;
+}
+
+/* Căn giữa tiêu đề */
+h2 {
+  text-align: center;
+  font-size: 28px;
   color: #333;
 }
 
-.add-product {
-  margin-bottom: 20px;
-}
-
-.add-product input {
-  width: 48%;
-  display: inline-block;
-  margin-right: 4%;
-}
-
-.add-product button {
-  width: 100%;
-  margin-top: 10px;
-}
-
-table {
-  width: 100%;
-  margin-top: 20px;
-  border-collapse: collapse;
-}
-
-table th, table td {
+/* Căn giữa các phần tử input và button */
+input[type="text"], input[type="file"] {
+  width: 80%; /* Chiều rộng 80% để căn giữa */
+  padding: 12px;
+  margin: 10px auto;
+  display: block;
+  border: 1px solid #ccc;
   text-align: center;
+  font-size: 16px;
+  border-radius: 4px;
 }
 
+/* Căn giữa button và thay đổi màu sắc khi hover */
 button {
-  width: 100%;
-  padding: 10px;
-  background-color: #4CAF50;
+  background-color: #007bff;
   color: white;
   border: none;
-  border-radius: 4px;
+  padding: 12px 24px;
   cursor: pointer;
+  border-radius: 4px;
+  margin: 10px auto;
+  display: block;
+  font-size: 16px;
+  width: 80%;
 }
 
 button:hover {
-  background-color: #45a049;
+  background-color: #0056b3;
 }
 
-.logout-btn {
-  width: 100%;
-  padding: 12px;
-  background-color: #f44336;
-  color: white;
-  border: none;
+/* Căn giữa phần quản lý người dùng */
+#user-list {
+  text-align: center;
+  margin-top: 30px;
+}
+
+#user-list-ul {
+  list-style-type: none;
+  padding-left: 0;
+  margin-top: 20px;
+}
+
+#user-list-ul li {
+  background-color: #f8f9fa;
+  padding: 10px;
+  margin: 10px 0;
   border-radius: 4px;
-  cursor: pointer;
+  border: 1px solid #ccc;
 }
 
-.logout-btn:hover {
-  background-color: #da190b;
-}
-
-.add-product input[type="file"] {
-  width: 48%;
-  display: inline-block;
-}
-
-.delete-btn {
-  background-color: #f44336;
-  color: white;
-  padding: 5px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.delete-btn:hover {
-  background-color: #da190b;
+/* Thêm không gian cho các khối phần tử trong admin */
+#add-product {
+  margin-top: 40px;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }

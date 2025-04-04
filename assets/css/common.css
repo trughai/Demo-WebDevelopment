@@ -1,93 +1,75 @@
-/* common.css */
-
+/* Đặt font mặc định cho toàn bộ trang */
 body {
-  font-family: Arial, sans-serif;
-  background-color: #f4f4f9;
+  font-family: 'Arial', sans-serif; /* Chọn phông chữ cơ bản */
+  background-color: #f4f4f4;
   margin: 0;
   padding: 0;
+  box-sizing: border-box; /* Đảm bảo box model nhất quán */
 }
 
-.container {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 20px;
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-h2 {
+/* Căn giữa tiêu đề h2 và h3 */
+h2, h3 {
   text-align: center;
-  color: #333;
+  margin-top: 0;
+  font-family: 'Arial', sans-serif;
 }
 
-input[type="text"],
-input[type="password"],
-input[type="email"],
-input[type="file"] {
-  width: 100%;
+/* Đảm bảo nội dung của các phần tử input có padding và căn giữa */
+input[type="text"], input[type="password"], input[type="email"], input[type="file"], button {
+  font-family: 'Arial', sans-serif; /* Đảm bảo font cho input và button */
   padding: 10px;
-  margin: 10px 0;
+  margin: 5px;
   border: 1px solid #ccc;
-  border-radius: 4px;
+  width: 80%; /* Chiều rộng của input để căn giữa */
+  display: block; /* Để mỗi phần tử input đứng riêng biệt */
+  margin-left: auto;
+  margin-right: auto;
 }
 
+/* Căn chỉnh button, làm cho nó đẹp và dễ sử dụng */
 button {
-  width: 100%;
-  padding: 12px;
-  background-color: #4CAF50;
+  background-color: #007bff;
   color: white;
   border: none;
-  border-radius: 4px;
+  padding: 10px 20px;
   cursor: pointer;
-  font-size: 16px;
-}
-
-button:hover {
-  background-color: #45a049;
-}
-
-p {
-  text-align: center;
-}
-
-a {
-  color: #4CAF50;
-  text-decoration: none;
-}
-
-a:hover {
-  text-decoration: underline;
-}
-
-table {
-  width: 100%;
+  display: inline-block; /* Làm cho nút có chiều rộng tự động */
   margin-top: 20px;
-  border-collapse: collapse;
-}
-
-table, th, td {
-  border: 1px solid #ddd;
-  padding: 8px;
-}
-
-th {
-  background-color: #f2f2f2;
-}
-
-td {
   text-align: center;
+  font-size: 16px; /* Điều chỉnh kích thước chữ trong nút */
+  border-radius: 5px;
 }
 
-.logout-btn {
-  background-color: #f44336;
+/* Sửa button khi hover */
+button:hover {
+  background-color: #0056b3;
 }
 
-.logout-btn:hover {
-  background-color: #da190b;
+/* Thêm không gian giữa các div */
+.container {
+  width: 80%;
+  margin: 0 auto;
+  padding-top: 20px;
+  text-align: center; /* Căn giữa nội dung */
 }
 
-button:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
+/* Căn chỉnh nội dung danh sách (sản phẩm, người dùng) */
+ul, li {
+  list-style-type: none;
+  padding-left: 0;
+  margin: 10px 0;
+}
+
+ul li {
+  background-color: #e9ecef;
+  padding: 10px;
+  margin: 5px 0;
+  text-align: center; /* Căn giữa nội dung bên trong li */
+}
+
+/* Các hình ảnh hiển thị */
+#product-list img {
+  max-width: 100px;
+  margin-right: 15px;
+  border-radius: 8px;
 }

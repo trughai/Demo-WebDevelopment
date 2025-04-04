@@ -1,58 +1,64 @@
-import { auth } from './firebase-config.js';
+import { auth, db, storage } from "./firebase-config.js";
 import { signOut } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
-import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+import { collection, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+import { ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-storage.js";
 
-const db = getFirestore();
-
-// Đăng xuất
 document.getElementById("logout-btn").addEventListener("click", async () => {
   await signOut(auth);
-  window.location.href = "login.html";
+  window.location.href = "index.html";
 });
 
-// Thêm sản phẩm mới
-document.getElementById("add-product-btn").addEventListener("click", async () => {
-  const name = document.getElementById("new-product-name").value;
-  const price = document.getElementById("new-product-price").value;
-  const image = document.getElementById("new-product-image").files[0];
+// Fetch users from Firestore
+const fetchUsers = async () => {
+  const querySnapshot = await getDocs(collection(db, "users"));
+  const userList = document.getElementById("user-list-ul");
+  userList.innerHTML = ""; // Clear the list before displaying
 
-  if (name && price && image) {
-    const imageUrl = await uploadImage(image); // Hàm tải ảnh lên Firebase Storage
-    await addDoc(collection(db, "products"), {
-      name,
-      price,
-      imageUrl,
-      stock: 10
+  querySnapshot.forEach((doc) => {
+    const li = document.createElement("li");
+    li.textContent = `${doc.data().email} - Role: ${doc.data().role}`;
+    const deleteBtn = document.createElement("button");
+    deleteBtn.textContent = "Delete";
+    deleteBtn.addEventListener("click", async () => {
+      await updateDoc(doc.ref, { role: "deleted" });
+      fetchUsers();
     });
+    li.appendChild(deleteBtn);
+    userList.appendChild(li);
+  });
+};
+
+fetchUsers();
+
+// Add Product with Image Upload
+document.getElementById("add-product-btn").addEventListener("click", async () => {
+  const productName = document.getElementById("product-name").value;
+  const productPrice = document.getElementById("product-price").value;
+  const productImage = document.getElementById("product-image").files[0];
+
+  if (productImage) {
+    // Create a reference to the Firebase Storage location
+    const imageRef = ref(storage, "products/" + productImage.name);
+
+    try {
+      // Upload the image to Firebase Storage
+      await uploadBytes(imageRef, productImage);
+
+      // Get the download URL of the image
+      const imageURL = await getDownloadURL(imageRef);
+
+      // Save the product to Firestore
+      await addDoc(collection(db, "products"), {
+        name: productName,
+        price: parseFloat(productPrice),
+        image: imageURL
+      });
+
+      alert("Product added successfully!");
+    } catch (error) {
+      console.error("Error adding product: ", error);
+    }
+  } else {
+    alert("Please select an image for the product.");
   }
 });
-
-// Hàm tải ảnh lên Firebase Storage
-async function uploadImage(image) {
-  const storageRef = firebase.storage().ref('product-images/' + image.name);
-  const snapshot = await storageRef.put(image);
-  return await snapshot.ref.getDownloadURL();
-}
-
-// Hiển thị sản phẩm từ Firestore
-async function loadProducts() {
-  const querySnapshot = await getDocs(collection(db, "products"));
-  querySnapshot.forEach((doc) => {
-    const product = doc.data();
-    const row = document.createElement("tr");
-    row.innerHTML = `
-      <td>${product.name}</td>
-      <td>${product.price}</td>
-      <td><button onclick="deleteProduct('${doc.id}')">Delete</button></td>
-    `;
-    document.getElementById("product-table").appendChild(row);
-  });
-}
-
-// Xóa sản phẩm
-async function deleteProduct(id) {
-  await deleteDoc(doc(db, "products", id));
-  loadProducts(); // Reload lại danh sách sản phẩm
-}
-
-loadProducts();
