@@ -8,35 +8,15 @@ document.getElementById("login-btn").addEventListener("click", async () => {
   const message = document.getElementById("login-message");
 
   try {
-    // Đảm bảo rằng email và password không trống
-    if (!email || !password) {
-      message.textContent = "Please enter both email and password.";
-      return;
-    }
-
-    // Đăng nhập với email và mật khẩu
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
-    const user = userCredential.user;
+    const uid = userCredential.user.uid;
 
-    // Kiểm tra role của người dùng trong Firestore
-    const userRef = doc(db, "users", user.uid);
-    const docSnap = await getDoc(userRef);
-
-    if (docSnap.exists()) {
-      const userData = docSnap.data();
-      
-      // Nếu không phải admin, chuyển hướng ra trang login
-      if (userData.role !== "admin") {
-        message.textContent = "You do not have permission to access the Admin Panel.";
-        setTimeout(() => {
-          window.location.href = "index.html";  // Chuyển về trang đăng nhập
-        }, 2000);
-      } else {
-        message.textContent = "Login successful!";
-        setTimeout(() => {
-          window.location.href = "admin.html"; // Chuyển hướng vào trang admin
-        }, 2000);
-      }
+    const userDoc = await getDoc(doc(db, "users", uid));
+    if (userDoc.exists() && userDoc.data().role === "admin") {
+      message.textContent = "Login success!";
+      window.location.href = "admin.html";
+    } else {
+      message.textContent = "You are not an admin!";
     }
   } catch (error) {
     message.textContent = "Login failed: " + error.message;

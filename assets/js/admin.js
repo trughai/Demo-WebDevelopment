@@ -1,50 +1,60 @@
 import { auth, db } from "./firebase-config.js";
-import { signOut } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
-import { getDoc, doc, updateDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+import {
+  signOut,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+import {
+  getDocs,
+  updateDoc,
+  doc,
+  collection,
+  getDoc
+} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
-const logoutBtn = document.getElementById("logout-btn");
-const addUserBtn = document.getElementById("add-user-btn");
+onAuthStateChanged(auth, async (user) => {
+  if (!user) {
+    window.location.href = "index.html";
+    return;
+  }
 
-// Đăng xuất
-logoutBtn.addEventListener("click", async () => {
+  const userDoc = await getDoc(doc(db, "users", user.uid));
+  if (!userDoc.exists() || userDoc.data().role !== "admin") {
+    alert("You are not authorized.");
+    window.location.href = "index.html";
+    return;
+  }
+
+  loadUsers();
+});
+
+async function loadUsers() {
+  const userTable = document.getElementById("user-table");
+  const querySnapshot = await getDocs(collection(db, "users"));
+  userTable.innerHTML = "";
+
+  querySnapshot.forEach((docSnap) => {
+    const data = docSnap.data();
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>${data.uid}</td>
+      <td>${data.email}</td>
+      <td>${data.role}</td>
+    `;
+    userTable.appendChild(row);
+  });
+}
+
+document.getElementById("update-role-btn").addEventListener("click", async () => {
+  const uid = document.getElementById("edit-uid").value;
+  const role = document.getElementById("edit-role").value;
+  if (uid && role) {
+    await updateDoc(doc(db, "users", uid), { role });
+    alert("Role updated!");
+    loadUsers();
+  }
+});
+
+document.getElementById("logout-btn").addEventListener("click", async () => {
   await signOut(auth);
-  window.location.href = "index.html"; // Quay lại trang đăng nhập
+  window.location.href = "index.html";
 });
-
-// Kiểm tra nếu người dùng là admin khi vào trang admin
-const checkAdmin = async () => {
-  const user = auth.currentUser;
-  if (user) {
-    const userRef = doc(db, "users", user.uid);
-    const docSnap = await getDoc(userRef);
-    if (docSnap.exists()) {
-      const userData = docSnap.data();
-      if (userData.role !== "admin") {
-        alert("You do not have permission to access this page.");
-        window.location.href = "index.html";  // Quay lại trang đăng nhập nếu không phải admin
-      }
-    }
-  } else {
-    alert("Please log in first.");
-    window.location.href = "index.html";  // Chuyển về trang login nếu chưa đăng nhập
-  }
-};
-
-// Thêm người dùng và chỉnh sửa role
-addUserBtn.addEventListener("click", async () => {
-  const userId = document.getElementById("user-id").value;
-  const newRole = document.getElementById("new-role").value;
-
-  if (userId && newRole) {
-    const userRef = doc(db, "users", userId);
-    await updateDoc(userRef, {
-      role: newRole // Cập nhật role người dùng
-    });
-
-    alert("User role updated successfully!");
-    window.location.reload();
-  }
-});
-
-// Kiểm tra quyền admin khi vào trang admin
-checkAdmin();

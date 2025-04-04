@@ -1,74 +1,35 @@
 body {
   font-family: Arial, sans-serif;
-  background-color: #f4f4f9;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  margin: 0;
-}
-
-.admin-container {
-  background-color: white;
-  border-radius: 8px;
+  background: #e0f7fa;
   padding: 20px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  width: 500px;
 }
-
-h2 {
-  text-align: center;
+.admin-container {
+  max-width: 800px;
+  margin: auto;
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
 }
-
-button {
+.add-user {
+  margin-bottom: 20px;
+}
+input, button {
   padding: 10px;
-  margin-top: 10px;
-  border: none;
-  background-color: #4CAF50;
-  color: white;
-  font-size: 16px;
-  cursor: pointer;
+  margin: 5px;
 }
-
-button:hover {
-  background-color: #45a049;
-}
-
-input {
-  width: 100%;
-  padding: 10px;
-  margin: 10px 0;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-.logout-btn {
-  background-color: red;
-}
-
 table {
   width: 100%;
-  margin-top: 20px;
   border-collapse: collapse;
 }
-
 table, th, td {
-  border: 1px solid #ddd;
+  border: 1px solid #aaa;
 }
-
 th, td {
   padding: 10px;
-  text-align: center;
+  text-align: left;
 }
-
-th {
-  background-color: #f2f2f2;
-}
-
-input[type="text"] {
-  width: 80%;
-}
-
-button.delete-btn {
-  background-color: #e74c3c;
+button {
+  background: #2196F3;
+  color: white;
+  border: none;
 }
