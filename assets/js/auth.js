@@ -1,6 +1,8 @@
-import { auth, db } from "./firebase-config.js";
-import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
-import { getDoc, doc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+import { auth } from "./firebase-config.js";
+import { signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+
+const db = getFirestore();
 
 document.getElementById("login-btn").addEventListener("click", async () => {
   const email = document.getElementById("login-email").value;
@@ -8,24 +10,32 @@ document.getElementById("login-btn").addEventListener("click", async () => {
   const message = document.getElementById("login-message");
 
   try {
-    // Đăng nhập với email và mật khẩu
+    // Đăng nhập người dùng
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
-
-    // Kiểm tra vai trò của người dùng sau khi đăng nhập
     const user = userCredential.user;
-    const userDoc = await getDoc(doc(db, "users", user.uid));
 
-    if (userDoc.exists()) {
-      const userData = userDoc.data();
-      if (userData.role === "admin") {
-        message.textContent = "Login successful! Redirecting to Admin page.";
-        window.location.href = "admin.html";  // Chuyển đến trang Admin
+    // Kiểm tra vai trò của người dùng trong Firestore
+    const userRef = doc(db, "users", user.uid);
+    const docSnap = await getDoc(userRef);
+
+    if (docSnap.exists()) {
+      const userData = docSnap.data();
+      const role = userData.role;
+
+      // Lưu vai trò và UID của người dùng vào sessionStorage
+      sessionStorage.setItem("userRole", role);
+      sessionStorage.setItem("userUID", user.uid);
+
+      message.textContent = "Login successful!";
+
+      // Nếu là admin, chuyển đến trang admin
+      if (role === "admin") {
+        window.location.href = "admin.html";
       } else {
-        message.textContent = "Login successful! You are a user.";
-        window.location.href = "user-home.html";  // Chuyển đến trang người dùng
+        window.location.href = "index.html";  // Quay lại trang chính nếu không phải admin
       }
     } else {
-      message.textContent = "User not found!";
+      message.textContent = "User data not found!";
     }
   } catch (error) {
     message.textContent = "Login failed: " + error.message;
