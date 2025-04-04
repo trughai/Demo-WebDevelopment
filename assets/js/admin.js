@@ -2,10 +2,9 @@ import { auth, db } from "./firebase-config.js";
 import { signOut } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
 import { getDoc, doc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
-const logoutBtn = document.getElementById("logout-btn");
-
+// Kiểm tra trạng thái đăng nhập và quyền truy cập
 const checkAdmin = async () => {
-  const user = auth.currentUser;
+  const user = auth.currentUser;  // Kiểm tra xem người dùng đã đăng nhập chưa
   if (user) {
     const userRef = doc(db, "users", user.uid);
     const docSnap = await getDoc(userRef);
@@ -23,10 +22,12 @@ const checkAdmin = async () => {
   }
 };
 
+// Đăng xuất người dùng
+const logoutBtn = document.getElementById("logout-btn");
 logoutBtn.addEventListener("click", async () => {
   try {
-    await signOut(auth);
-    window.location.href = "index.html";  // Đăng xuất và quay lại trang đăng nhập
+    await signOut(auth);  // Đăng xuất
+    window.location.href = "index.html";  // Chuyển hướng về trang đăng nhập
   } catch (error) {
     console.error("Logout error: ", error.message);
   }
