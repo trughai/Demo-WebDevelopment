@@ -1,31 +1,26 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel</title>
-    <link rel="stylesheet" href="assets/css/common.css">
-    <link rel="stylesheet" href="assets/css/admin.css">
+  <title>Admin Panel</title>
+  <link rel="stylesheet" href="assets/css/common.css" />
+  <link rel="stylesheet" href="assets/css/admin.css" />
 </head>
 <body>
-    <div class="container">
-        <h2>Admin Panel</h2>
-        <button id="logout-btn">Logout</button>
-
-        <div id="user-list">
-            <h3>Manage Users</h3>
-            <ul id="user-list-ul"></ul>
-        </div>
-
-        <div id="add-product">
-            <h3>Add Product</h3>
-            <input type="text" id="product-name" placeholder="Product Name">
-            <input type="text" id="product-price" placeholder="Product Price">
-            <input type="file" id="product-image" accept="image/*">
-            <button id="add-product-btn">Add Product</button>
-        </div>
-
-        <script type="module" src="assets/js/admin.js"></script>
+  <div class="container">
+    <h2>Admin Panel</h2>
+    <button id="logout-btn">Logout</button>
+    <div id="user-list">
+      <h3>Manage Users</h3>
+      <ul id="user-list-ul"></ul>
     </div>
+    <div id="add-product">
+      <h3>Add Product</h3>
+      <input type="text" id="product-name" placeholder="Product Name" />
+      <input type="text" id="product-price" placeholder="Product Price" />
+      <input type="file" id="product-image" accept="image/*" />
+      <button id="add-product-btn">Add Product</button>
+    </div>
+    <script type="module" src="assets/js/admin.js"></script>
+  </div>
 </body>
 </html>
