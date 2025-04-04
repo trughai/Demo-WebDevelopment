@@ -1,36 +1,55 @@
+// assets/js/user.js
 import { auth, db } from "./firebase-config.js";
-import { signOut } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
-import { collection, getDocs, updateDoc, doc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+import {
+  signOut,
+  onAuthStateChanged,
+} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+import {
+  collection,
+  query,
+  where,
+  getDocs,
+  updateDoc,
+  doc,
+} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
-document.getElementById("logout-btn").addEventListener("click", async () => {
+const taskList = document.getElementById("task-list");
+const logoutBtn = document.getElementById("logout-btn");
+
+logoutBtn.addEventListener("click", async () => {
   await signOut(auth);
   window.location.href = "index.html";
 });
 
-const user = auth.currentUser;
-const taskList = document.getElementById("task-list");
-
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
-
 onAuthStateChanged(auth, async (user) => {
-  if (!user) return;
-
-  const querySnapshot = await getDocs(collection(db, "tasks"));
-  querySnapshot.forEach(async (docSnap) => {
-    const task = docSnap.data();
-    if (task.assignedTo === user.uid) {
-      const li = document.createElement("li");
-      const checkbox = document.createElement("input");
-      checkbox.type = "checkbox";
-      checkbox.checked = task.completed;
-      checkbox.addEventListener("change", async () => {
-        await updateDoc(doc(db, "tasks", docSnap.id), {
-          completed: checkbox.checked
-        });
-      });
-      li.textContent = task.title + " ";
-      li.appendChild(checkbox);
-      taskList.appendChild(li);
-    }
-  });
+  if (user) {
+    loadTasks(user.uid);
+  } else {
+    window.location.href = "index.html";
+  }
 });
+
+async function loadTasks(uid) {
+  taskList.innerHTML = "";
+  const q = query(collection(db, "tasks"), where("assignedTo", "==", uid));
+  const querySnapshot = await getDocs(q);
+
+  querySnapshot.forEach((docSnap) => {
+    const task = docSnap.data();
+    const li = document.createElement("li");
+    li.textContent = task.title;
+    if (task.completed) li.classList.add("completed");
+
+    const btn = document.createElement("button");
+    btn.textContent = task.completed ? "Undo" : "Mark as done";
+    btn.addEventListener("click", async () => {
+      await updateDoc(doc(db, "tasks", docSnap.id), {
+        completed: !task.completed,
+      });
+      loadTasks(uid); // reload list
+    });
+
+    li.appendChild(btn);
+    taskList.appendChild(li);
+  });
+}
