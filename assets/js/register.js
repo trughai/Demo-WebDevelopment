@@ -23,7 +23,7 @@ document.getElementById("register-btn").addEventListener("click", async () => {
 
     message.textContent = "Registration successful!";
     setTimeout(() => {
-      window.location.href = "index.html";
+      window.location.href = "index.html"; // Chuyển về trang login
     }, 2000);
   } catch (error) {
     message.textContent = "Registration failed: " + error.message;
