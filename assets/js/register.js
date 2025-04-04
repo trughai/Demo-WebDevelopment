@@ -1,6 +1,6 @@
 import { auth } from "./firebase-config.js";
 import { createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
-import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+import { getFirestore, setDoc, doc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
 const db = getFirestore();
 
@@ -10,20 +10,19 @@ document.getElementById("register-btn").addEventListener("click", async () => {
   const message = document.getElementById("register-message");
 
   try {
-    // Tạo người dùng mới với email và mật khẩu
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
 
-    // Lưu thông tin người dùng vào Firestore, bao gồm UID
+    // Add user data to Firestore
     await setDoc(doc(db, "users", user.uid), {
       email: email,
-      role: "user", // Mặc định người dùng mới có vai trò là 'user'
-      username: email.split('@')[0] // Đặt tên người dùng theo email (hoặc có thể thay đổi theo ý bạn)
+      role: "user",  // Default role is user
+      username: email.split('@')[0]
     });
 
     message.textContent = "Registration successful!";
     setTimeout(() => {
-      window.location.href = "index.html";  // Quay lại trang đăng nhập
+      window.location.href = "index.html";
     }, 2000);
   } catch (error) {
     message.textContent = "Registration failed: " + error.message;

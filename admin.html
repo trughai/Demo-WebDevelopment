@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin Panel</title>
+  <link rel="stylesheet" href="assets/css/common.css" />
   <link rel="stylesheet" href="assets/css/admin.css" />
 </head>
 <body>
@@ -13,8 +14,9 @@
 
     <div class="add-user">
       <input type="text" id="new-username" placeholder="New Username" />
-      <input type="text" id="new-role" placeholder="Role (e.g. admin, user)" />
+      <input type="text" id="new-role" placeholder="Role" />
       <button id="add-user-btn">Add User</button>
+      <p id="message"></p>
     </div>
 
     <table>
@@ -22,13 +24,12 @@
         <tr>
           <th>Username</th>
           <th>Role</th>
-          <th>Actions</th>
+          <th>Action</th>
         </tr>
       </thead>
       <tbody id="user-table"></tbody>
     </table>
   </div>
-
   <script type="module" src="assets/js/admin.js"></script>
 </body>
 </html>
