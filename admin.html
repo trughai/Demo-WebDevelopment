@@ -1,37 +1,27 @@
-<!-- admin.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin Panel</title>
-  <link rel="stylesheet" href="assets/css/common.css" />
   <link rel="stylesheet" href="assets/css/admin.css" />
 </head>
 <body>
   <div class="admin-container">
-    <h2>Welcome, Admin</h2>
-    <button class="logout-btn" id="logout-btn">Logout</button>
+    <h2>Admin Panel</h2>
+    <button id="logout-btn">Logout</button>
 
     <div class="add-task">
-      <input type="text" id="task-title" placeholder="Task Title" />
-      <input type="text" id="task-description" placeholder="Task Description" />
-      <input type="text" id="task-user" placeholder="Assign User (UserID)" />
+      <h3>Add Task</h3>
+      <input type="text" id="task-name" placeholder="Task Name" />
       <button id="add-task-btn">Add Task</button>
     </div>
 
-    <table>
-      <thead>
-        <tr>
-          <th>Title</th>
-          <th>Description</th>
-          <th>Status</th>
-        </tr>
-      </thead>
-      <tbody id="task-table"></tbody>
-    </table>
+    <div class="task-list">
+      <h3>Task List</h3>
+      <ul id="task-list"></ul>
+    </div>
   </div>
-
   <script type="module" src="assets/js/admin.js"></script>
 </body>
 </html>
