@@ -1,35 +1,29 @@
-import { auth, db } from "./firebase-config.js";
-import { signOut } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+import { db } from "./firebase-config.js";
 import { collection, getDocs } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
-document.getElementById("logout-btn").addEventListener("click", async () => {
-  await signOut(auth);
-  window.location.href = "index.html";
-});
-
-// Fetch Products
-const fetchProducts = async () => {
-  const querySnapshot = await getDocs(collection(db, "products"));
+// Hiển thị danh sách sản phẩm
+async function loadProducts() {
+  const productsRef = collection(db, "products");
+  const querySnapshot = await getDocs(productsRef);
   const productList = document.getElementById("product-list");
-  productList.innerHTML = ""; // Clear the list before displaying
+  productList.innerHTML = "";
 
-  querySnapshot.forEach((doc) => {
+  querySnapshot.forEach((docSnap) => {
+    const data = docSnap.data();
     const li = document.createElement("li");
-
-    const product = doc.data();
-    const productImage = document.createElement("img");
-    productImage.src = product.image;
-    productImage.alt = product.name;
-    productImage.style.width = "100px";
-    productImage.style.height = "100px";
-
-    const productName = document.createElement("p");
-    productName.textContent = `${product.name} - $${product.price}`;
-
-    li.appendChild(productImage);
-    li.appendChild(productName);
+    li.innerHTML = `
+      <strong>${data.name}</strong><br>
+      Price: ${data.price} <br>
+      <img src="${data.imageUrl}" alt="${data.name}" width="100" />
+    `;
     productList.appendChild(li);
   });
-};
+}
 
-fetchProducts();
+// Gọi hàm loadProducts khi trang được tải
+loadProducts();
+
+// Đăng xuất
+document.getElementById("logout-btn").addEventListener("click", () => {
+  window.location.href = "index.html";
+});
