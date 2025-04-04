@@ -1,44 +1,43 @@
-// user.js
 import { auth, db } from "./firebase-config.js";
-import { signOut } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
-import { doc, updateDoc, getDocs, collection } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+import {
+  collection,
+  query,
+  where,
+  onSnapshot,
+  updateDoc,
+  doc,
+} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
-document.getElementById("logout-btn").addEventListener("click", async () => {
-  await signOut(auth);
-  window.location.href = "index.html"; // Quay lại trang đăng nhập
-});
+auth.onAuthStateChanged((user) => {
+  if (user) {
+    const uid = user.uid;
+    const q = query(collection(db, "tasks"), where("assignedTo", "==", uid));
+    const taskList = document.getElementById("task-list");
 
-// Hiển thị công việc cho user và cho phép đánh dấu hoàn thành
-async function getUserTasks() {
-  const user = auth.currentUser;
-  const tasksCollection = collection(db, "tasks");
-  const taskSnapshot = await getDocs(tasksCollection);
-  const taskList = document.getElementById("task-list");
+    onSnapshot(q, (snapshot) => {
+      taskList.innerHTML = "";
 
-  taskSnapshot.forEach(doc => {
-    const task = doc.data();
+      snapshot.forEach((docSnap) => {
+        const task = docSnap.data();
+        const li = document.createElement("li");
 
-    // Chỉ cho phép user đánh dấu công việc của mình
-    if (!task.assignedTo || task.assignedTo === user.uid) {
-      const taskItem = document.createElement("li");
-      taskItem.textContent = task.name;
-      taskItem.style.textDecoration = task.completed ? "line-through" : "none";
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.checked = task.completed;
 
-      const checkbox = document.createElement("input");
-      checkbox.type = "checkbox";
-      checkbox.checked = task.completed;
-
-      // Cho phép người dùng đánh dấu công việc là hoàn thành
-      checkbox.addEventListener("change", async () => {
-        await updateDoc(doc(db, "tasks", task.name), {
-          completed: checkbox.checked
+        checkbox.addEventListener("change", async () => {
+          const taskRef = doc(db, "tasks", docSnap.id);
+          await updateDoc(taskRef, {
+            completed: checkbox.checked,
+          });
         });
+
+        li.textContent = `${task.title} - ${task.description}`;
+        li.prepend(checkbox);
+        taskList.appendChild(li);
       });
-
-      taskItem.appendChild(checkbox);
-      taskList.appendChild(taskItem);
-    }
-  });
-}
-
-getUserTasks();
+    });
+  } else {
+    window.location.href = "login.html";
+  }
+});
