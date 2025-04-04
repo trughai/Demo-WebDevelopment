@@ -1,35 +1,66 @@
-body {
-  font-family: Arial, sans-serif;
-  background: #e0f7fa;
-  padding: 20px;
-}
 .admin-container {
   max-width: 800px;
-  margin: auto;
-  background: white;
+  margin: 0 auto;
   padding: 30px;
-  border-radius: 10px;
+  text-align: center;
 }
+
+.logout-btn {
+  float: right;
+  margin-bottom: 20px;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
 .add-user {
   margin-bottom: 20px;
 }
-input, button {
+
+.add-user input {
   padding: 10px;
-  margin: 5px;
+  margin-right: 10px;
+  width: 200px;
 }
+
+#add-user-btn {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+}
+
 table {
   width: 100%;
   border-collapse: collapse;
+  margin-top: 20px;
 }
-table, th, td {
-  border: 1px solid #aaa;
-}
+
 th, td {
-  padding: 10px;
-  text-align: left;
+  padding: 12px;
+  border: 1px solid #ddd;
+  text-align: center;
 }
-button {
-  background: #2196F3;
+
+.update-role-input {
+  padding: 5px;
+  width: 100px;
+  margin-right: 5px;
+}
+
+.update-role-btn {
+  background-color: #28a745;
   color: white;
   border: none;
+  padding: 6px 10px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.update-role-btn:hover {
+  background-color: #218838;
 }

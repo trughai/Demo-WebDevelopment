@@ -1,21 +1,30 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin Panel</title>
-  <link rel="stylesheet" href="assets/css/admin.css">
+  <link rel="stylesheet" href="assets/css/common.css" />
+  <link rel="stylesheet" href="assets/css/admin.css" />
 </head>
 <body>
   <div class="admin-container">
     <h2>Welcome, Admin</h2>
-    <button id="logout-btn">Logout</button>
+    <button class="logout-btn" id="logout-btn">Logout</button>
+
     <div class="add-user">
-      <input type="text" id="edit-uid" placeholder="User UID" />
-      <input type="text" id="edit-role" placeholder="New Role" />
-      <button id="update-role-btn">Update Role</button>
+      <input type="text" id="new-username" placeholder="New Email" />
+      <input type="text" id="new-role" placeholder="Role" />
+      <button id="add-user-btn">Add User</button>
     </div>
+
     <table>
       <thead>
-        <tr><th>UID</th><th>Email</th><th>Role</th></tr>
+        <tr>
+          <th>Email</th>
+          <th>Role</th>
+          <th>Actions</th>
+        </tr>
       </thead>
       <tbody id="user-table"></tbody>
     </table>
