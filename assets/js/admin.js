@@ -5,14 +5,14 @@ import { addDoc, collection } from "https://www.gstatic.com/firebasejs/11.6.0/fi
 // Đăng xuất người dùng
 document.getElementById("logout-btn").addEventListener("click", async () => {
   try {
-    await signOut(auth);  // Đăng xuất
+    await signOut(auth);  // Đăng xuất người dùng
     window.location.href = "index.html";  // Chuyển hướng về trang đăng nhập
   } catch (error) {
     console.error("Error during sign out: ", error);
   }
 });
 
-// Thêm người dùng mới vào Firestore
+// Thêm người dùng vào Firestore
 document.getElementById("add-user-btn").addEventListener("click", async () => {
   const username = document.getElementById("new-username").value;
   const role = document.getElementById("new-role").value;
@@ -20,12 +20,12 @@ document.getElementById("add-user-btn").addEventListener("click", async () => {
   if (username && role) {
     try {
       // Thêm người dùng vào Firestore
-      const docRef = await addDoc(collection(db, "users"), {
+      await addDoc(collection(db, "users"), {
         username: username,
         role: role
       });
 
-      // Hiển thị người dùng vừa thêm vào bảng
+      // Thêm người dùng vào bảng hiển thị
       const row = document.createElement("tr");
       row.innerHTML = `
         <td>${username}</td>
@@ -34,11 +34,12 @@ document.getElementById("add-user-btn").addEventListener("click", async () => {
       `;
       document.getElementById("user-table").appendChild(row);
 
-      // Reset các input
+      // Reset các input sau khi thêm người dùng
       document.getElementById("new-username").value = '';
       document.getElementById("new-role").value = '';
     } catch (error) {
       console.error("Error adding user: ", error);
+      alert("There was an error adding the user: " + error.message);
     }
   } else {
     alert("Please fill in both username and role fields.");
@@ -47,18 +48,22 @@ document.getElementById("add-user-btn").addEventListener("click", async () => {
 
 // Tải danh sách người dùng từ Firestore khi trang được tải lại
 document.addEventListener("DOMContentLoaded", async () => {
-  const querySnapshot = await getDocs(collection(db, "users"));
-  const tableBody = document.getElementById("user-table");
+  try {
+    const querySnapshot = await getDocs(collection(db, "users"));
+    const tableBody = document.getElementById("user-table");
 
-  // Hiển thị tất cả người dùng từ Firestore
-  querySnapshot.forEach((doc) => {
-    const user = doc.data();
-    const row = document.createElement("tr");
-    row.innerHTML = `
-      <td>${user.username}</td>
-      <td>${user.role}</td>
-      <td><button onclick="this.parentElement.parentElement.remove()">Delete</button></td>
-    `;
-    tableBody.appendChild(row);
-  });
+    // Hiển thị tất cả người dùng từ Firestore
+    querySnapshot.forEach((doc) => {
+      const user = doc.data();
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${user.username}</td>
+        <td>${user.role}</td>
+        <td><button onclick="this.parentElement.parentElement.remove()">Delete</button></td>
+      `;
+      tableBody.appendChild(row);
+    });
+  } catch (error) {
+    console.error("Error loading users: ", error);
+  }
 });
