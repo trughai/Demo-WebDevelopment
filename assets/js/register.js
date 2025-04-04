@@ -8,6 +8,11 @@ document.getElementById("register-btn").addEventListener("click", async () => {
   const message = document.getElementById("register-message");
 
   try {
+    if (!email || !password) {
+      message.textContent = "Please fill in both email and password.";
+      return;
+    }
+
     // Đăng ký người dùng với email và mật khẩu
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
 
