@@ -1,13 +1,32 @@
 import { auth, db } from "./firebase-config.js";
 import { signOut } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
-import { addDoc, collection } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
-import { getDocs } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+import { addDoc, collection, getDoc, doc, getDocs } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+
+// Kiểm tra nếu người dùng đã đăng nhập và có quyền admin
+async function checkAdminRole() {
+  const user = auth.currentUser;
+  if (user) {
+    const userDoc = await getDoc(doc(db, "users", user.uid));
+    if (userDoc.exists()) {
+      const userData = userDoc.data();
+      if (userData.role === "admin") {
+        // Nếu là admin, cho phép truy cập chức năng quản trị
+        document.getElementById("add-user-btn").disabled = false;
+        document.getElementById("logout-btn").disabled = false;
+      } else {
+        // Nếu không phải admin, chuyển hướng hoặc ẩn các chức năng quản trị
+        alert("You do not have admin privileges.");
+        window.location.href = "index.html"; // Chuyển về trang login
+      }
+    }
+  }
+}
 
 // Đăng xuất người dùng
 document.getElementById("logout-btn").addEventListener("click", async () => {
   try {
-    await signOut(auth);  // Đăng xuất người dùng
-    window.location.href = "index.html";  // Chuyển hướng về trang đăng nhập
+    await signOut(auth);
+    window.location.href = "index.html";
   } catch (error) {
     console.error("Error during sign out: ", error);
   }
@@ -68,3 +87,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.error("Error loading users: ", error);
   }
 });
+
+// Kiểm tra quyền admin khi trang Admin được tải
+checkAdminRole();

@@ -14,16 +14,14 @@ document.getElementById("register-btn").addEventListener("click", async () => {
     // Lấy thông tin người dùng
     const user = userCredential.user;
 
-    // Lưu thông tin người dùng vào Firestore
+    // Lưu thông tin người dùng vào Firestore với vai trò "user" mặc định
     await setDoc(doc(db, "users", user.uid), {
       email: email,
-      role: "user",  // Mặc định role là "user", có thể thay đổi nếu cần
+      role: "user",  // Vai trò mặc định là "user"
       uid: user.uid,
     });
 
     message.textContent = "Registration successful!";
-    
-    // Chuyển hướng về trang đăng nhập sau 2 giây
     setTimeout(() => {
       window.location.href = "index.html";
     }, 2000);
