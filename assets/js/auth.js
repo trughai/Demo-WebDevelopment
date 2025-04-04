@@ -9,7 +9,7 @@ document.getElementById("login-btn").addEventListener("click", async () => {
   try {
     await signInWithEmailAndPassword(auth, email, password);
     message.textContent = "Login successful!";
-    window.location.href = "admin.html";  // Chuyển đến trang admin
+    window.location.href = "admin.html";
   } catch (error) {
     message.textContent = "Login failed: " + error.message;
   }

@@ -1,76 +1,32 @@
-import { auth, db } from "./firebase-config.js";
+import { auth } from "./firebase-config.js";
 import { signOut } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
-import { getDocs, collection, doc, updateDoc, deleteDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
-const logoutBtn = document.getElementById("logout-btn");
-logoutBtn.addEventListener("click", async () => {
+// Đăng xuất
+document.getElementById("logout-btn").addEventListener("click", async () => {
   await signOut(auth);
-  window.location.href = "index.html"; // Quay lại trang đăng nhập
+  window.location.href = "index.html";
 });
 
-// Lấy danh sách người dùng
-async function fetchUsers() {
-  const querySnapshot = await getDocs(collection(db, "users"));
-  const usersList = [];
-  querySnapshot.forEach((doc) => {
-    usersList.push({ id: doc.id, ...doc.data() });
-  });
-  return usersList;
-}
-
-// Hiển thị danh sách người dùng
-fetchUsers().then((users) => {
-  const tableBody = document.getElementById("user-table");
-  tableBody.innerHTML = "";
-
-  users.forEach((user) => {
-    const row = document.createElement("tr");
-    row.innerHTML = `
-      <td>${user.email}</td>
-      <td>${user.role}</td>
-      <td>
-        <button onclick="updateUserRole('${user.id}')">Update Role</button>
-        <button onclick="deleteUser('${user.id}')">Delete</button>
-      </td>
-    `;
-    tableBody.appendChild(row);
-  });
-});
-
-// Thêm người dùng mới
+// Thêm người dùng
 document.getElementById("add-user-btn").addEventListener("click", async () => {
-  const email = document.getElementById("new-user-email").value;
-  const role = document.getElementById("new-user-role").value;
-
-  if (email && role) {
-    // Thêm người dùng vào Firestore
-    const userRef = doc(db, "users", email);
-    await setDoc(userRef, { email: email, role: role });
-
-    // Hiển thị lại danh sách người dùng
-    fetchUsers();
+  const username = document.getElementById("new-username").value;
+  const role = document.getElementById("new-role").value;
+  
+  if (username && role) {
+    const db = getFirestore();
+    try {
+      await addDoc(collection(db, "users"), {
+        username: username,
+        role: role
+      });
+      alert("User added successfully!");
+      document.getElementById("new-username").value = "";
+      document.getElementById("new-role").value = "";
+    } catch (e) {
+      console.error("Error adding document: ", e);
+    }
+  } else {
+    alert("Please fill in both fields!");
   }
 });
-
-// Cập nhật vai trò người dùng
-async function updateUserRole(userId) {
-  const newRole = prompt("Enter new role for the user (admin/user):");
-
-  if (newRole !== null) {
-    const userRef = doc(db, "users", userId);
-    await updateDoc(userRef, { role: newRole });
-    alert(`User role updated to ${newRole}`);
-
-    fetchUsers(); // Reload danh sách người dùng
-  }
-}
-
-// Xóa người dùng
-async function deleteUser(userId) {
-  if (confirm("Are you sure you want to delete this user?")) {
-    const userRef = doc(db, "users", userId);
-    await deleteDoc(userRef);
-
-    fetchUsers(); // Reload danh sách người dùng
-  }
-}
