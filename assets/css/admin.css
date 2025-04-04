@@ -1,66 +1,27 @@
+/* admin.css */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+}
+
 .admin-container {
   max-width: 800px;
-  margin: 0 auto;
-  padding: 30px;
-  text-align: center;
+  margin: 20px auto;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-.logout-btn {
-  float: right;
-  margin-bottom: 20px;
-  background-color: #dc3545;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  cursor: pointer;
-  border-radius: 5px;
-}
-
-.add-user {
-  margin-bottom: 20px;
-}
-
-.add-user input {
-  padding: 10px;
-  margin-right: 10px;
-  width: 200px;
-}
-
-#add-user-btn {
-  padding: 10px 20px;
-  background-color: #007bff;
+button {
+  padding: 10px 15px;
+  margin-top: 10px;
+  background-color: #4CAF50;
   color: white;
   border: none;
   border-radius: 5px;
 }
 
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
-}
-
-th, td {
-  padding: 12px;
-  border: 1px solid #ddd;
-  text-align: center;
-}
-
-.update-role-input {
-  padding: 5px;
-  width: 100px;
-  margin-right: 5px;
-}
-
-.update-role-btn {
-  background-color: #28a745;
-  color: white;
-  border: none;
-  padding: 6px 10px;
-  cursor: pointer;
-  border-radius: 5px;
-}
-
-.update-role-btn:hover {
-  background-color: #218838;
+button:hover {
+  background-color: #45a049;
 }

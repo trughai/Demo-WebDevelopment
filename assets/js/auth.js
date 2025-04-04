@@ -1,6 +1,6 @@
-import { auth, db } from "./firebase-config.js";
+// auth.js
+import { auth } from "./firebase-config.js";
 import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
-import { doc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
 document.getElementById("login-btn").addEventListener("click", async () => {
   const email = document.getElementById("login-email").value;
@@ -9,14 +9,16 @@ document.getElementById("login-btn").addEventListener("click", async () => {
 
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
-    const uid = userCredential.user.uid;
+    const user = userCredential.user;
+    message.textContent = "Login successful!";
 
-    const userDoc = await getDoc(doc(db, "users", uid));
-    if (userDoc.exists() && userDoc.data().role === "admin") {
-      message.textContent = "Login success!";
+    // Kiểm tra role từ Firestore
+    const userRef = db.collection("users").doc(user.uid);
+    const doc = await userRef.get();
+    if (doc.exists && doc.data().role === 'admin') {
       window.location.href = "admin.html";
     } else {
-      message.textContent = "You are not an admin!";
+      window.location.href = "user.html";
     }
   } catch (error) {
     message.textContent = "Login failed: " + error.message;
