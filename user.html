@@ -3,14 +3,23 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>User Panel</title>
-  <link rel="stylesheet" href="assets/css/user.css" />
+  <title>User Products</title>
+  <link rel="stylesheet" href="assets/css/common.css" />
 </head>
 <body>
   <div class="container">
-    <h2>User Panel</h2>
-    <button id="logout-btn">Logout</button>
-    <ul id="task-list"></ul>
+    <h2>Products</h2>
+    <table id="product-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Price</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="product-list"></tbody>
+    </table>
+    <button id="place-order-btn">Place Order</button>
   </div>
   <script type="module" src="assets/js/user.js"></script>
 </body>

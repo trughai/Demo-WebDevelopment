@@ -1,37 +1,86 @@
-body {
-  font-family: Arial, sans-serif;
-  background-color: #f0f2f5;
-  padding: 40px;
-}
-.container {
-  max-width: 800px;
+/* admin.css */
+
+.admin-container {
+  max-width: 1000px;
   margin: 0 auto;
-  background: #fff;
-  padding: 30px;
-  border-radius: 12px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
-input {
-  margin: 10px 5px;
-  padding: 10px;
-  width: 200px;
+
+.admin-container h2 {
+  text-align: center;
+  color: #333;
 }
+
+.add-product {
+  margin-bottom: 20px;
+}
+
+.add-product input {
+  width: 48%;
+  display: inline-block;
+  margin-right: 4%;
+}
+
+.add-product button {
+  width: 100%;
+  margin-top: 10px;
+}
+
+table {
+  width: 100%;
+  margin-top: 20px;
+  border-collapse: collapse;
+}
+
+table th, table td {
+  text-align: center;
+}
+
 button {
-  padding: 10px 15px;
-  margin: 10px 5px;
-  background-color: #007bff;
-  border: none;
+  width: 100%;
+  padding: 10px;
+  background-color: #4CAF50;
   color: white;
-  border-radius: 6px;
+  border: none;
+  border-radius: 4px;
   cursor: pointer;
 }
+
 button:hover {
-  background-color: #0056b3;
+  background-color: #45a049;
 }
-ul {
-  margin-top: 20px;
+
+.logout-btn {
+  width: 100%;
+  padding: 12px;
+  background-color: #f44336;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
 }
-li {
-  padding: 10px;
-  border-bottom: 1px solid #ccc;
+
+.logout-btn:hover {
+  background-color: #da190b;
+}
+
+.add-product input[type="file"] {
+  width: 48%;
+  display: inline-block;
+}
+
+.delete-btn {
+  background-color: #f44336;
+  color: white;
+  padding: 5px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.delete-btn:hover {
+  background-color: #da190b;
 }

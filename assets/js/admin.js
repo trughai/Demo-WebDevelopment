@@ -1,36 +1,58 @@
-import { auth, db } from "./firebase-config.js";
+import { auth } from './firebase-config.js';
 import { signOut } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
-import { addDoc, collection, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
+const db = getFirestore();
+
+// Đăng xuất
 document.getElementById("logout-btn").addEventListener("click", async () => {
   await signOut(auth);
-  window.location.href = "index.html";
+  window.location.href = "login.html";
 });
 
-document.getElementById("add-task-btn").addEventListener("click", async () => {
-  const title = document.getElementById("task-title").value;
-  const assignedTo = document.getElementById("assigned-to").value;
+// Thêm sản phẩm mới
+document.getElementById("add-product-btn").addEventListener("click", async () => {
+  const name = document.getElementById("new-product-name").value;
+  const price = document.getElementById("new-product-price").value;
+  const image = document.getElementById("new-product-image").files[0];
 
-  try {
-    await addDoc(collection(db, "tasks"), {
-      title,
-      assignedTo,
-      completed: false
+  if (name && price && image) {
+    const imageUrl = await uploadImage(image); // Hàm tải ảnh lên Firebase Storage
+    await addDoc(collection(db, "products"), {
+      name,
+      price,
+      imageUrl,
+      stock: 10
     });
-    alert("Task added");
-    location.reload();
-  } catch (error) {
-    alert("Failed to add task: " + error.message);
   }
 });
 
-const taskList = document.getElementById("task-list");
-(async () => {
-  const querySnapshot = await getDocs(collection(db, "tasks"));
-  querySnapshot.forEach(docSnap => {
-    const task = docSnap.data();
-    const li = document.createElement("li");
-    li.textContent = `${task.title} - ${task.assignedTo} - ${task.completed ? "✅" : "❌"}`;
-    taskList.appendChild(li);
+// Hàm tải ảnh lên Firebase Storage
+async function uploadImage(image) {
+  const storageRef = firebase.storage().ref('product-images/' + image.name);
+  const snapshot = await storageRef.put(image);
+  return await snapshot.ref.getDownloadURL();
+}
+
+// Hiển thị sản phẩm từ Firestore
+async function loadProducts() {
+  const querySnapshot = await getDocs(collection(db, "products"));
+  querySnapshot.forEach((doc) => {
+    const product = doc.data();
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>${product.name}</td>
+      <td>${product.price}</td>
+      <td><button onclick="deleteProduct('${doc.id}')">Delete</button></td>
+    `;
+    document.getElementById("product-table").appendChild(row);
   });
-})();
+}
+
+// Xóa sản phẩm
+async function deleteProduct(id) {
+  await deleteDoc(doc(db, "products", id));
+  loadProducts(); // Reload lại danh sách sản phẩm
+}
+
+loadProducts();
