@@ -13,15 +13,16 @@
     <button class="logout-btn" id="logout-btn">Logout</button>
 
     <div class="add-user">
-      <input type="text" id="new-username" placeholder="New Username" />
+      <input type="email" id="new-email" placeholder="Email" />
       <input type="text" id="new-role" placeholder="Role" />
       <button id="add-user-btn">Add User</button>
     </div>
 
+    <h3>User List</h3>
     <table>
       <thead>
         <tr>
-          <th>Username</th>
+          <th>Email</th>
           <th>Role</th>
           <th>Action</th>
         </tr>
@@ -29,6 +30,7 @@
       <tbody id="user-table"></tbody>
     </table>
   </div>
+
   <script type="module" src="assets/js/admin.js"></script>
 </body>
 </html>
