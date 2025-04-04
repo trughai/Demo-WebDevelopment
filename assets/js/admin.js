@@ -1,4 +1,3 @@
-// admin.js
 import { auth, db, storage } from "./firebase-config.js";
 import {
   signOut,
@@ -28,6 +27,7 @@ onAuthStateChanged(auth, async (user) => {
       window.location.href = "index.html";
     } else {
       loadUsers();
+      loadProducts();  // Tải danh sách sản phẩm
     }
   } else {
     window.location.href = "index.html";
@@ -99,7 +99,29 @@ document.getElementById("add-product-btn").addEventListener("click", async () =>
     document.getElementById("product-name").value = "";
     document.getElementById("product-price").value = "";
     document.getElementById("product-image").value = "";
+
+    // Tải lại danh sách sản phẩm sau khi thêm sản phẩm mới
+    loadProducts();
   } catch (err) {
     alert("Lỗi khi thêm sản phẩm: " + err.message);
   }
 });
+
+// Load danh sách sản phẩm
+async function loadProducts() {
+  const productsRef = collection(db, "products");
+  const querySnapshot = await getDocs(productsRef);
+  const productList = document.getElementById("product-list-ul");
+  productList.innerHTML = "";
+
+  querySnapshot.forEach((docSnap) => {
+    const data = docSnap.data();
+    const li = document.createElement("li");
+    li.innerHTML = `
+      <strong>${data.name}</strong><br>
+      Price: ${data.price} <br>
+      <img src="${data.imageUrl}" alt="${data.name}" width="100" />
+    `;
+    productList.appendChild(li);
+  });
+}
