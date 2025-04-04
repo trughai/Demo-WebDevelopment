@@ -8,10 +8,16 @@ document.getElementById("login-btn").addEventListener("click", async () => {
   const message = document.getElementById("login-message");
 
   try {
+    // Đảm bảo rằng email và password không trống
+    if (!email || !password) {
+      message.textContent = "Please enter both email and password.";
+      return;
+    }
+
     // Đăng nhập với email và mật khẩu
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
-    
+
     // Kiểm tra role của người dùng trong Firestore
     const userRef = doc(db, "users", user.uid);
     const docSnap = await getDoc(userRef);
