@@ -9,24 +9,29 @@
 </head>
 <body>
   <div class="admin-container">
-    <h2>Welcome, Admin</h2>
+    <h2>Admin Panel - Task Management</h2>
     <button class="logout-btn" id="logout-btn">Logout</button>
 
-    <div class="add-user">
-      <input type="text" id="new-username" placeholder="New Email" />
-      <input type="text" id="new-role" placeholder="Role" />
-      <button id="add-user-btn">Add User</button>
+    <div class="add-task">
+      <input type="text" id="task-title" placeholder="Task Title" />
+      <input type="text" id="task-desc" placeholder="Task Description" />
+      <select id="assigned-user">
+        <!-- Tự động load danh sách người dùng -->
+      </select>
+      <button id="add-task-btn">Add Task</button>
     </div>
 
     <table>
       <thead>
         <tr>
-          <th>Email</th>
-          <th>Role</th>
-          <th>Actions</th>
+          <th>Task</th>
+          <th>Description</th>
+          <th>Assigned To</th>
+          <th>Status</th>
+          <th>Action</th>
         </tr>
       </thead>
-      <tbody id="user-table"></tbody>
+      <tbody id="task-table"></tbody>
     </table>
   </div>
   <script type="module" src="assets/js/admin.js"></script>
