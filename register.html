@@ -1,28 +1,18 @@
-// register.js
-import { auth, db } from "./firebase-config.js";
-import { createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
-import { doc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
-
-document.getElementById("register-btn").addEventListener("click", async () => {
-  const email = document.getElementById("register-email").value;
-  const password = document.getElementById("register-password").value;
-  const message = document.getElementById("register-message");
-
-  try {
-    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-    const user = userCredential.user;
-
-    // Lưu thông tin người dùng vào Firestore
-    await setDoc(doc(db, "users", user.uid), {
-      email: email,
-      role: 'user' // Mặc định là user, admin sẽ được gán sau
-    });
-
-    message.textContent = "Registration successful!";
-    setTimeout(() => {
-      window.location.href = "index.html";
-    }, 2000);
-  } catch (error) {
-    message.textContent = "Registration failed: " + error.message;
-  }
-});
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Register</title>
+  <link rel="stylesheet" href="assets/css/index.css">
+</head>
+<body>
+  <div class="container">
+    <h2>Register</h2>
+    <input id="register-email" type="email" placeholder="Email" />
+    <input id="register-password" type="password" placeholder="Password" />
+    <button id="register-btn">Register</button>
+    <p id="register-message"></p>
+    <p><a href="index.html">Login</a></p>
+  </div>
+  <script type="module" src="assets/js/register.js"></script>
+</body>
+</html>
