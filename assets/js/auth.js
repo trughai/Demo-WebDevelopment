@@ -1,6 +1,6 @@
 import { auth, db } from "./firebase-config.js";
 import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
-import { doc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js"; // Import Firestore
+import { doc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
 document.getElementById("login-btn").addEventListener("click", async () => {
   const email = document.getElementById("login-email").value;
@@ -8,28 +8,29 @@ document.getElementById("login-btn").addEventListener("click", async () => {
   const message = document.getElementById("login-message");
 
   try {
+    // Đăng nhập với email và mật khẩu
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
-    const userRef = doc(db, "users", user.uid);  // Truy xuất người dùng từ Firestore
+    
+    // Kiểm tra role của người dùng trong Firestore
+    const userRef = doc(db, "users", user.uid);
     const docSnap = await getDoc(userRef);
 
     if (docSnap.exists()) {
       const userData = docSnap.data();
       
-      // Kiểm tra nếu user không phải admin
+      // Nếu không phải admin, chuyển hướng ra trang login
       if (userData.role !== "admin") {
         message.textContent = "You do not have permission to access the Admin Panel.";
         setTimeout(() => {
-          window.location.href = "index.html";  // Chuyển hướng người dùng không phải admin ra trang login
+          window.location.href = "index.html";  // Chuyển về trang đăng nhập
         }, 2000);
       } else {
         message.textContent = "Login successful!";
         setTimeout(() => {
-          window.location.href = "admin.html"; // Chuyển hướng admin vào trang admin
+          window.location.href = "admin.html"; // Chuyển hướng vào trang admin
         }, 2000);
       }
-    } else {
-      message.textContent = "User not found!";
     }
   } catch (error) {
     message.textContent = "Login failed: " + error.message;

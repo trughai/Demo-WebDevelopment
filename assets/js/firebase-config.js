@@ -1,8 +1,8 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
 import { getAuth } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
-import { getFirestore } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js"; // Import Firestore
+import { getFirestore } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
-// Firebase configuration
+// Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyBUBbt3KY14oGSYGD45b4C2pZK0OIdfpyY",
   authDomain: "fir-webdevelopment.firebaseapp.com",
@@ -13,11 +13,11 @@ const firebaseConfig = {
   measurementId: "G-JEEC5B6SS3"
 };
 
-// Khởi tạo Firebase app
+// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
-// Khởi tạo các dịch vụ Firebase
+// Initialize Firebase services
 const auth = getAuth(app);
-const db = getFirestore(app);  // Khởi tạo Firestore
+const db = getFirestore(app); // Firestore service
 
-export { auth, db }; // Xuất auth và db
+export { auth, db };
