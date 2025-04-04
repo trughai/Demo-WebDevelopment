@@ -1,16 +1,17 @@
 import { auth } from "./firebase-config.js";
 import { signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
-import { getFirestore, collection, getDocs, updateDoc, doc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+import { getFirestore, collection, getDocs, updateDoc, doc, deleteDoc, addDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
 const db = getFirestore();
 
 let userRole = "";  // Để lưu role người dùng hiện tại
+let currentUserId = ""; // Để lưu ID của người dùng đang đăng nhập
 
 // Kiểm tra trạng thái đăng nhập
 onAuthStateChanged(auth, async (user) => {
   if (user) {
-    const uid = user.uid;
-    const userRef = doc(db, "users", uid);
+    currentUserId = user.uid;  // Lưu ID người dùng
+    const userRef = doc(db, "users", currentUserId);
     const docSnap = await getDoc(userRef);
     if (docSnap.exists()) {
       userRole = docSnap.data().role;
@@ -36,6 +37,12 @@ document.getElementById("add-user-btn").addEventListener("click", async () => {
   const role = document.getElementById("new-role").value;
 
   if (username && role) {
+    // Thêm người dùng mới vào Firestore
+    await addDoc(collection(db, "users"), {
+      username: username,
+      role: role
+    });
+
     const row = document.createElement("tr");
     row.innerHTML = `
       <td>${username}</td>
@@ -53,15 +60,26 @@ document.getElementById("add-user-btn").addEventListener("click", async () => {
 async function updateRole(username) {
   const role = prompt("Enter new role for " + username);
   if (role) {
-    const userRef = doc(db, "users", username);
-    await updateDoc(userRef, { role });
-    alert("Role updated to " + role);
+    // Tìm người dùng trong Firestore và cập nhật vai trò
+    const querySnapshot = await getDocs(collection(db, "users"));
+    querySnapshot.forEach((doc) => {
+      if (doc.data().username === username) {
+        const userRef = doc(db, "users", doc.id); // Lấy ID người dùng
+        updateDoc(userRef, { role });
+        alert("Role updated to " + role);
+      }
+    });
   }
 }
 
 // Hàm xóa người dùng
 async function deleteUser(username) {
-  const userRef = doc(db, "users", username);
-  await deleteDoc(userRef);
-  alert("User deleted");
+  const querySnapshot = await getDocs(collection(db, "users"));
+  querySnapshot.forEach((doc) => {
+    if (doc.data().username === username) {
+      const userRef = doc(db, "users", doc.id); // Lấy ID người dùng
+      deleteDoc(userRef);
+      alert("User deleted");
+    }
+  });
 }
