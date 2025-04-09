@@ -2,7 +2,7 @@ import { db } from "./firebase-config.js";
 import { doc, setDoc, updateDoc, arrayUnion, getDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
 // Thêm sản phẩm vào giỏ hàng
-async function addToCart(id, name, price, imageUrl) {
+export async function addToCart(id, name, price, imageUrl) {
   const user = firebase.auth().currentUser;
 
   if (user) {
@@ -43,7 +43,7 @@ async function addToCart(id, name, price, imageUrl) {
 }
 
 // Hiển thị giỏ hàng
-async function getCartItems() {
+export async function getCartItems() {
   const user = firebase.auth().currentUser;
 
   if (user) {
@@ -100,5 +100,3 @@ function displayCartItems(items) {
 
 // Lấy giỏ hàng khi trang được tải
 window.onload = getCartItems;
-
-export { addToCart, getCartItems };

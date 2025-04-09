@@ -5,41 +5,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Danh sách sản phẩm</title>
   <link rel="stylesheet" href="assets/css/products.css" />
-  <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
 </head>
-<header>
+<body>
+  <header>
     <nav>
       <a href="index.html">Trang chủ</a>
       <a href="cart.html">Giỏ hàng</a>
       <button id="logout-btn">Đăng xuất</button>
     </nav>
   </header>
-<body>
+  
   <h1>Danh sách sản phẩm</h1>
-  <div id="product-list" class="product-list"></div>
-    <!-- 3 sản phẩm mặc định -->
-    <div class="product-card">
-      <img src="images/ip16.jpg" alt="Sản phẩm 1" />
-      <h3>iPhone 16 Promax</h3>
-      <p>Giá: 35.000.000₫</p>
-      <button>Thêm vào giỏ</button>
-    </div>
-    <div class="product-card">
-      <img src="images/giaynike.jpg" alt="Sản phẩm 2" />
-      <h3>Giày Nike</h3>
-      <p>Giá: 999.000đ</p>
-      <button>Thêm vào giỏ</button>
-    </div>
-    <div class="product-card">
-      <img src="images/aohoodie.webp" alt="Sản phẩm 3" />
-      <h3>Áo Hoodie Champions</h3>
-      <p>Giá: 555.000đ</p>
-      <button>Thêm vào giỏ</button>
-    </div>
-  </div>
+  <div id="product-list" class="product-list"></div> <!-- Hiển thị danh sách sản phẩm -->
 
   <script type="module" src="assets/js/products.js"></script>
 </body>
