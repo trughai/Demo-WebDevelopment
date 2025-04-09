@@ -1,5 +1,5 @@
 import { db, auth } from "./firebase-config.js";
-import { collection, getDocs, setDoc, doc, query, where } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+import { collection, getDocs, setDoc, query, where } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
   const productList = document.getElementById("product-list");
@@ -28,6 +28,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.querySelectorAll(".add-to-cart-btn").forEach((btn) => {
       btn.addEventListener("click", async (event) => {
         const productId = event.target.getAttribute("data-id");
+
+        // Lấy thông tin sản phẩm từ Firestore
         const productSnapshot = await getDocs(query(collection(db, "products"), where("id", "==", productId)));
         const productData = productSnapshot.docs[0].data();
         const user = auth.currentUser;
