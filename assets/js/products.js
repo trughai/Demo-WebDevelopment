@@ -1,5 +1,12 @@
-import { db } from "./firebase-config.js";
-import { collection, getDocs } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+import { db, auth } from "./firebase-config.js";
+import {
+  collection,
+  getDocs,
+  addDoc
+} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+import {
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
   const productList = document.getElementById("product-list");
@@ -18,9 +25,29 @@ document.addEventListener("DOMContentLoaded", async () => {
       card.innerHTML = `
         <img src="${data.imageUrl}" alt="${data.name}" />
         <h3>${data.name}</h3>
-        <p>${Number(data.price).toLocaleString("vi-VN")} ₫</p>
+        <p>${Number(data.price).toLocaleString()}đ</p>
         <button>Thêm vào giỏ</button>
       `;
+
+      // Xử lý khi ấn "Thêm vào giỏ"
+      card.querySelector("button").addEventListener("click", () => {
+        onAuthStateChanged(auth, async (user) => {
+          if (!user) {
+            window.location.href = "index.html";
+            return;
+          }
+
+          await addDoc(collection(db, "carts"), {
+            userId: user.uid,
+            productId: doc.id,
+            name: data.name,
+            price: data.price,
+            imageUrl: data.imageUrl,
+            createdAt: new Date()
+          });
+        });
+      });
+
       productList.appendChild(card);
     });
   } catch (err) {
