@@ -1,36 +1,57 @@
-// auth.js
-import { auth, db } from "./firebase-config.js";
-import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
-import { doc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
+import {
+  getAuth,
+  signInWithEmailAndPassword
+} from "https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js";
+import {
+  getFirestore,
+  doc,
+  getDoc
+} from "https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js";
 
-document.getElementById("login-btn").addEventListener("click", async (e) => {
-  e.preventDefault();  // Ngừng form từ việc reload trang
+// Cấu hình Firebase
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_AUTH_DOMAIN",
+  projectId: "YOUR_PROJECT_ID",
+};
 
-  const email = document.getElementById("login-email").value.trim();
-  const password = document.getElementById("login-password").value.trim();
-  const msg = document.getElementById("login-message");
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+// Xử lý form đăng nhập
+document.getElementById("login-form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const email = document.getElementById("login-email").value;
+  const password = document.getElementById("login-password").value;
+  const message = document.getElementById("login-message");
 
   try {
+    // Đăng nhập
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
-    const uid = userCredential.user.uid;
+    const user = userCredential.user;
 
-    const userDocRef = doc(db, "users", uid);
-    const userDoc = await getDoc(userDocRef);
+    // Lấy role từ Firestore
+    const userDoc = await getDoc(doc(db, "users", user.uid));
+    if (userDoc.exists()) {
+      const data = userDoc.data();
+      const role = data.role;
 
-    if (!userDoc.exists()) {
-      msg.textContent = "Tài khoản chưa được cấp quyền truy cập.";
-      return;
-    }
-
-    const role = userDoc.data().role;
-    if (role === "admin") {
-      window.location.href = "admin.html";
-    } else if (role === "user") {
-      window.location.href = "user.html";
+      // Chuyển trang tùy theo role
+      if (role === "admin") {
+        window.location.href = "admin.html";
+      } else {
+        window.location.href = "index.html";
+      }
     } else {
-      msg.textContent = "Vai trò không hợp lệ.";
+      message.textContent = "Không tìm thấy thông tin người dùng trong Firestore!";
+      message.style.color = "red";
     }
-  } catch (err) {
-    msg.textContent = "Login failed: " + err.message;
+
+  } catch (error) {
+    message.textContent = "Đăng nhập thất bại: " + error.message;
+    message.style.color = "red";
   }
 });
