@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tất cả sản phẩm</title>
+  <link rel="stylesheet" href="assets/css/index.css" />
+</head>
+<body>
+
+  <header>
+    <div class="logo">Online Store</div>
+    <nav>
+      <ul>
+        <li><a href="index.html">Trang chủ</a></li>
+        <li><a href="login.html">Đăng nhập</a></li>
+        <li><a href="products.html">Sản phẩm</a></li>
+        <li><a href="#">Giỏ hàng</a></li>
+        <li><a href="#">Liên hệ</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <section class="product-section">
+    <h2>Tất cả sản phẩm</h2>
+    <div class="product-grid" id="product-grid">
+
+      <!-- Sản phẩm mặc định hiển thị khi chưa có data -->
+      <div class="product-card">
+        <img src="images/ip16.jpg" alt="iPhone 16 Promax">
+        <h3>iPhone 16 Promax</h3>
+        <p class="price">Giá: 35.000.000₫</p>
+        <button>Đặt hàng</button>
+      </div>
+      <div class="product-card">
+        <img src="images/giaynike.jpg" alt="Giày Nike">
+        <h3>Giày Nike</h3>
+        <p class="price">Giá: 999.000₫</p>
+        <button>Đặt hàng</button>
+      </div>
+      <div class="product-card">
+        <img src="images/aohoodie.webp" alt="Áo Hoodie Champions">
+        <h3>Áo Hoodie Champions</h3>
+        <p class="price">Giá: 555.000₫</p>
+        <button>Đặt hàng</button>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Firebase script -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
+    import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_AUTH_DOMAIN",
+      projectId: "YOUR_PROJECT_ID",
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const productGrid = document.getElementById("product-grid");
+
+    onSnapshot(collection(db, "products"), (snapshot) => {
+      if (!snapshot.empty) {
+        productGrid.innerHTML = ""; // Clear default products
+      }
+
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        const productHTML = `
+          <div class="product-card">
+            <img src="${data.imageUrl}" alt="${data.name}">
+            <h3>${data.name}</h3>
+            <p class="price">Giá: ${data.price}₫</p>
+            <button>Đặt hàng</button>
+          </div>
+        `;
+        productGrid.innerHTML += productHTML;
+      });
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Giỏ hàng</title>
+  <link rel="stylesheet" href="assets/css/cart.css">
+</head>
+<body>
+  <header>
+    <h2>Giỏ hàng của bạn</h2>
+    <div class="user-info" id="user-info" style="display: none;">
+      Xin chào, <span id="username">User</span>!
+      <button id="logoutBtn">Đăng xuất</button>
+    </div>
+  </header>
+
+  <main>
+    <div id="cart-items" class="cart-items"></div>
+    <div id="empty-message" style="display: none;">Giỏ hàng đang trống.</div>
+  </main>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js";
+    import { getFirestore, collection, query, where, getDocs, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_AUTH_DOMAIN",
+      projectId: "YOUR_PROJECT_ID",
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const cartItemsDiv = document.getElementById("cart-items");
+    const emptyMsg = document.getElementById("empty-message");
+    const usernameSpan = document.getElementById("username");
+    const userInfoDiv = document.getElementById("user-info");
+    const logoutBtn = document.getElementById("logoutBtn");
+
+    logoutBtn.addEventListener("click", () => {
+      signOut(auth).then(() => {
+        window.location.href = "index.html";
+      });
+    });
+
+    function renderCartItem(docData, id) {
+      const div = document.createElement("div");
+      div.className = "cart-item";
+      div.innerHTML = `
+        <img src="${docData.imageUrl}" alt="${docData.name}">
+        <div class="info">
+          <h3>${docData.name}</h3>
+          <p>Giá: ${docData.price}</p>
+          <button data-id="${id}" class="remove-btn">Xoá</button>
+        </div>
+      `;
+      cartItemsDiv.appendChild(div);
+    }
+
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        usernameSpan.textContent = user.displayName || user.email;
+        userInfoDiv.style.display = "block";
+
+        const q = query(collection(db, "cart"), where("userId", "==", user.uid));
+        const querySnapshot = await getDocs(q);
+
+        if (querySnapshot.empty) {
+          emptyMsg.style.display = "block";
+        } else {
+          querySnapshot.forEach(doc => {
+            renderCartItem(doc.data(), doc.id);
+          });
+        }
+
+        cartItemsDiv.addEventListener("click", async (e) => {
+          if (e.target.classList.contains("remove-btn")) {
+            const id = e.target.getAttribute("data-id");
+            await deleteDoc(doc(db, "cart", id));
+            e.target.closest(".cart-item").remove();
+
+            if (cartItemsDiv.children.length === 0) {
+              emptyMsg.style.display = "block";
+            }
+          }
+        });
+
+      } else {
+        window.location.href = "login.html";
+      }
+    });
+  </script>
+</body>
+</html>
