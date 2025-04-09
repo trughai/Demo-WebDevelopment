@@ -1,117 +1,69 @@
-/* Reset margin và padding */
-* {
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(to right, #e3f2fd, #fce4ec);
     margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-  
-  /* Body và font chung */
-  body {
-    font-family: 'Arial', sans-serif;
-    background-color: #f4f4f4;
+    padding: 20px;
     color: #333;
-    line-height: 1.6;
   }
   
-  /* Header */
-  header {
-    background-color: #333;
-    color: #fff;
-    padding: 10px 0;
-  }
-  
-  header nav {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-  }
-  
-  header nav a {
-    color: #fff;
-    text-decoration: none;
-    font-size: 18px;
-  }
-  
-  header nav a:hover {
-    text-decoration: underline;
-  }
-  
-  header nav button {
-    background-color: #e74c3c;
-    border: none;
-    color: white;
-    padding: 8px 16px;
-    cursor: pointer;
-  }
-  
-  header nav button:hover {
-    background-color: #c0392b;
-  }
-  
-  /* Tiêu đề */
   h1 {
     text-align: center;
-    margin-top: 30px;
-    font-size: 28px;
-    color: #333;
+    color: #444;
+    margin-bottom: 30px;
   }
   
-  /* Danh sách sản phẩm */
-  .product-list {
+  #product-list {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
     gap: 20px;
-    padding: 20px;
     max-width: 1200px;
-    margin: 0 auto;
+    margin: auto;
   }
   
   .product-card {
-    background-color: #fff;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease;
+    background: white;
+    padding: 16px;
+    border-radius: 16px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    text-align: center;
   }
   
   .product-card:hover {
-    transform: scale(1.05);
+    transform: translateY(-5px);
+    box-shadow: 0 6px 14px rgba(0,0,0,0.15);
   }
   
   .product-card img {
     width: 100%;
-    height: 200px;
+    height: 160px;
     object-fit: cover;
-    border-bottom: 1px solid #ddd;
+    border-radius: 12px;
   }
   
   .product-card h3 {
-    font-size: 20px;
-    margin: 10px 0;
-    padding: 0 10px;
+    margin: 12px 0 6px;
+    font-size: 1.1rem;
+    color: #333;
   }
   
   .product-card p {
-    font-size: 16px;
-    color: #555;
-    padding: 0 10px 10px;
+    color: #e91e63;
+    font-weight: bold;
+    margin-bottom: 10px;
   }
   
   .product-card button {
-    background-color: #27ae60;
+    background-color: #f48fb1;
     color: white;
     border: none;
-    padding: 12px 20px;
-    width: 100%;
-    font-size: 16px;
+    padding: 8px 14px;
+    border-radius: 8px;
     cursor: pointer;
-    border-bottom-left-radius: 8px;
-    border-bottom-right-radius: 8px;
     transition: background-color 0.3s ease;
   }
   
   .product-card button:hover {
-    background-color: #2ecc71;
+    background-color: #ec407a;
   }
   
