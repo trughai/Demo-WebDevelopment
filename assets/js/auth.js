@@ -11,9 +11,9 @@ import {
 
 // Cấu hình Firebase
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
+  apiKey : "AIzaSyBUBbt3KY14oGSYGD45b4C2pZK0OIdfpyY" , 
+  authDomain : "fir-webdevelopment.firebaseapp.com" , 
+  projectId : "fir-webdevelopment" , 
 };
 
 const app = initializeApp(firebaseConfig);
