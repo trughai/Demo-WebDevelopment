@@ -1,5 +1,6 @@
 import { db } from "./firebase-config.js";
 import { collection, getDocs } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+import { addToCart } from "./cart.js";  // Đảm bảo hàm addToCart được export từ cart.js
 
 document.addEventListener("DOMContentLoaded", async () => {
   const productList = document.getElementById("product-list");
@@ -42,25 +43,3 @@ document.addEventListener("DOMContentLoaded", async () => {
     productList.innerHTML = "<p>Lỗi tải sản phẩm.</p>";
   }
 });
-
-// Thêm sản phẩm vào giỏ hàng
-function addToCart(id, name, price, imageUrl) {
-  const cart = JSON.parse(localStorage.getItem("cart")) || [];
-
-  // Kiểm tra xem sản phẩm đã có trong giỏ hàng chưa
-  const existingProduct = cart.find(item => item.id === id);
-  if (existingProduct) {
-    alert("Sản phẩm đã có trong giỏ hàng!");
-  } else {
-    cart.push({
-      id,
-      name,
-      price,
-      imageUrl,
-      quantity: 1, // Số lượng mặc định là 1
-    });
-
-    localStorage.setItem("cart", JSON.stringify(cart));
-    alert("Thêm vào giỏ hàng thành công!");
-  }
-}

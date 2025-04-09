@@ -1,30 +1,28 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Giỏ hàng</title>
-  <link rel="stylesheet" href="assets/css/cart.css"> 
-  <script src="https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/11.6.0/firebase-storage.js"></script>
+  <link rel="stylesheet" href="assets/css/cart.css" />
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
+  <script src="assets/js/cart.js" type="module"></script>
 </head>
 <body>
   <header>
     <nav>
       <a href="index.html">Trang chủ</a>
-      <a href="products.html">Sản phẩm</a>
+      <a href="cart.html">Giỏ hàng</a>
       <button id="logout-btn">Đăng xuất</button>
     </nav>
   </header>
 
   <main>
     <h1>Giỏ hàng của bạn</h1>
-    <ul id="cart-list"></ul> <!-- Hiển thị giỏ hàng -->
+    <ul id="cart-list"></ul> <!-- Danh sách sản phẩm trong giỏ hàng -->
     <div id="total-price">Tổng tiền: 0 đ</div> <!-- Tổng tiền giỏ hàng -->
   </main>
-
-  <script src="cart.js"></script> <!-- JavaScript để hiển thị giỏ hàng -->
 </body>
 </html>
