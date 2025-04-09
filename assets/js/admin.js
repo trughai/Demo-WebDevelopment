@@ -10,6 +10,7 @@ import {
   collection,
   updateDoc,
   setDoc,
+  deleteDoc
 } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 import {
   ref,
@@ -81,12 +82,10 @@ document.getElementById("add-product-btn").addEventListener("click", async () =>
   }
 
   try {
-    // Upload hình ảnh
     const storageRef = ref(storage, "product-images/" + file.name);
     await uploadBytes(storageRef, file);
     const imageUrl = await getDownloadURL(storageRef);
 
-    // Lưu sản phẩm
     const productId = Date.now().toString();
     await setDoc(doc(db, "products", productId), {
       name,
@@ -100,7 +99,6 @@ document.getElementById("add-product-btn").addEventListener("click", async () =>
     document.getElementById("product-price").value = "";
     document.getElementById("product-image").value = "";
 
-    // Tải lại danh sách sản phẩm sau khi thêm sản phẩm mới
     loadProducts();
   } catch (err) {
     alert("Lỗi khi thêm sản phẩm: " + err.message);
@@ -120,8 +118,52 @@ async function loadProducts() {
     li.innerHTML = `
       <strong>${data.name}</strong><br>
       Price: ${data.price} <br>
-      <img src="${data.imageUrl}" alt="${data.name}" width="100" />
+      <img src="${data.imageUrl}" alt="${data.name}" width="100" /><br>
+      <button class="edit-product-btn" data-id="${docSnap.id}" data-name="${data.name}" data-price="${data.price}">Edit</button>
+      <button class="delete-product-btn" data-id="${docSnap.id}">Delete</button>
     `;
     productList.appendChild(li);
   });
+
+  document.querySelectorAll(".delete-product-btn").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      const id = btn.getAttribute("data-id");
+      if (confirm("Bạn có chắc muốn xóa sản phẩm này?")) {
+        await deleteDoc(doc(db, "products", id));
+        loadProducts();
+      }
+    });
+  });
+
+  document.querySelectorAll(".edit-product-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const id = btn.getAttribute("data-id");
+      const name = btn.getAttribute("data-name");
+      const price = btn.getAttribute("data-price");
+
+      document.getElementById("edit-id").value = id;
+      document.getElementById("edit-name").value = name;
+      document.getElementById("edit-price").value = price;
+      document.getElementById("edit-modal").style.display = "block";
+    });
+  });
 }
+
+// Lưu thay đổi chỉnh sửa sản phẩm
+document.getElementById("save-edit").addEventListener("click", async () => {
+  const id = document.getElementById("edit-id").value;
+  const name = document.getElementById("edit-name").value;
+  const price = document.getElementById("edit-price").value;
+
+  await updateDoc(doc(db, "products", id), {
+    name,
+    price
+  });
+  document.getElementById("edit-modal").style.display = "none";
+  loadProducts();
+});
+
+// Đóng modal chỉnh sửa
+document.getElementById("close-edit").addEventListener("click", () => {
+  document.getElementById("edit-modal").style.display = "none";
+});

@@ -34,8 +34,20 @@
       <h3>Product List</h3>
       <ul id="product-list-ul"></ul>
     </div>
-
-    <script type="module" src="assets/js/admin.js"></script>
   </div>
+
+  <!-- Modal chỉnh sửa sản phẩm -->
+  <div id="edit-modal">
+    <div class="modal-content">
+      <h3>Edit Product</h3>
+      <input type="hidden" id="edit-id" />
+      <input type="text" id="edit-name" placeholder="Product Name" />
+      <input type="text" id="edit-price" placeholder="Product Price" />
+      <button id="save-edit">Save</button>
+      <button id="close-edit">Cancel</button>
+    </div>
+  </div>
+
+  <script type="module" src="assets/js/admin.js"></script>
 </body>
 </html>
