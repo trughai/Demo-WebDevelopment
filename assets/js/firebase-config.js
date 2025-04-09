@@ -4,12 +4,12 @@ import { getFirestore } from "https://www.gstatic.com/firebasejs/11.6.0/firebase
 import { getStorage } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-storage.js";
 
 const firebaseConfig = {
-  apiKey : "AIzaSyBUBbt3KY14oGSYGD45b4C2pZK0OIdfpyY" , 
-  authDomain : "fir-webdevelopment.firebaseapp.com" , 
-  projectId : "fir-webdevelopment" , 
-  storageBucket : "fir-webdevelopment.firebasestorage.app" , 
-  messagingSenderId : "781668512389" , 
-  appId : "1:781668512389:web:2813b1f6663720bea3afec" , 
+  apiKey : "AIzaSyBUBbt3KY14oGSYGD45b4C2pZK0OIdfpyY",
+  authDomain : "fir-webdevelopment.firebaseapp.com",
+  projectId : "fir-webdevelopment",
+  storageBucket : "fir-webdevelopment.firebasestorage.app",
+  messagingSenderId : "781668512389",
+  appId : "1:781668512389:web:2813b1f6663720bea3afec",
   measurementId : "G-JEEC5B6SS3"
 };
 
