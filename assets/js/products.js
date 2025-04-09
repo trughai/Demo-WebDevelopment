@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       card.innerHTML = `
         <img src="${data.imageUrl}" alt="${data.name}" />
         <h3>${data.name}</h3>
-        <p>${Number(data.price).toLocaleString()}đ</p>
+        <p>${Number(data.price).toLocaleString("vi-VN")} ₫</p>
         <button>Thêm vào giỏ</button>
       `;
       productList.appendChild(card);

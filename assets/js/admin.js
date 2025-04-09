@@ -59,7 +59,6 @@ async function loadUsers() {
     userList.appendChild(li);
   });
 
-  // Gán sự kiện nút
   document.querySelectorAll("#user-list-ul button").forEach((btn) => {
     btn.addEventListener("click", async () => {
       const id = btn.getAttribute("data-id");
@@ -73,10 +72,10 @@ async function loadUsers() {
 // Thêm sản phẩm
 document.getElementById("add-product-btn").addEventListener("click", async () => {
   const name = document.getElementById("product-name").value.trim();
-  const price = document.getElementById("product-price").value.trim();
+  const price = parseInt(document.getElementById("product-price").value.trim());
   const file = document.getElementById("product-image").files[0];
 
-  if (!name || !price || !file) {
+  if (!name || isNaN(price) || !file) {
     alert("Điền đầy đủ thông tin và chọn hình ảnh.");
     return;
   }
@@ -117,7 +116,7 @@ async function loadProducts() {
     const li = document.createElement("li");
     li.innerHTML = `
       <strong>${data.name}</strong><br>
-      Price: ${data.price} <br>
+      Price: ${Number(data.price).toLocaleString("vi-VN")} ₫ <br>
       <img src="${data.imageUrl}" alt="${data.name}" width="100" /><br>
       <button class="edit-product-btn" data-id="${docSnap.id}" data-name="${data.name}" data-price="${data.price}">Edit</button>
       <button class="delete-product-btn" data-id="${docSnap.id}">Delete</button>
@@ -153,7 +152,12 @@ async function loadProducts() {
 document.getElementById("save-edit").addEventListener("click", async () => {
   const id = document.getElementById("edit-id").value;
   const name = document.getElementById("edit-name").value;
-  const price = document.getElementById("edit-price").value;
+  const price = parseInt(document.getElementById("edit-price").value);
+
+  if (!name || isNaN(price)) {
+    alert("Điền đầy đủ thông tin hợp lệ.");
+    return;
+  }
 
   await updateDoc(doc(db, "products", id), {
     name,
