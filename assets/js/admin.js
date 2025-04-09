@@ -167,3 +167,11 @@ document.getElementById("save-edit").addEventListener("click", async () => {
 document.getElementById("close-edit").addEventListener("click", () => {
   document.getElementById("edit-modal").style.display = "none";
 });
+
+// Đóng modal khi click ra ngoài nội dung modal
+window.addEventListener("click", (e) => {
+  const modal = document.getElementById("edit-modal");
+  if (e.target === modal) {
+    modal.style.display = "none";
+  }
+});
