@@ -3,24 +3,24 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Danh sách sản phẩm</title>
+  <title>Danh mục sản phẩm</title>
   <link rel="stylesheet" href="assets/css/products.css" />
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
-  <script type="module" src="assets/js/products.js"></script> <!-- Đảm bảo có type="module" -->
+  <script src="assets/js/products.js" type="module"></script>
 </head>
 <body>
   <header>
     <nav>
       <a href="index.html">Trang chủ</a>
       <a href="cart.html">Giỏ hàng</a>
-      <button id="logout-btn">Đăng xuất</button>
     </nav>
   </header>
-  
-  <h1>Danh sách sản phẩm</h1>
-  <div id="product-list" class="product-list"></div> <!-- Hiển thị danh sách sản phẩm -->
 
+  <main>
+    <h1>Danh mục sản phẩm</h1>
+    <div id="product-list"></div> <!-- Danh sách sản phẩm sẽ hiển thị ở đây -->
+  </main>
 </body>
 </html>
