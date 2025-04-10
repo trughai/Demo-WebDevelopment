@@ -1,155 +1,123 @@
-/* Reset một số thuộc tính mặc định */
+/* Reset cơ bản */
 * {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
-  font-family: Arial, sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* Cấu trúc cơ bản của trang */
-body {
-  background-color: #f4f7fa;
-  color: #333;
-}
-
-header {
-  background-color: #3498db;
-  padding: 10px 0;
-  text-align: center;
-}
-
-header nav a {
-  color: #fff;
-  text-decoration: none;
-  font-size: 18px;
-  margin: 0 15px;
-  padding: 10px;
-  transition: background-color 0.3s;
-}
-
-header nav a:hover {
-  background-color: #2980b9;
-}
-
-header nav button {
-  padding: 10px 20px;
-  border: none;
-  background-color: #e74c3c;
-  color: white;
-  font-size: 16px;
-  cursor: pointer;
-  border-radius: 5px;
-  transition: background-color 0.3s;
-}
-
-header nav button:hover {
-  background-color: #c0392b;
-}
-
-/* Phần thân chính */
-main {
-  padding: 20px;
-  max-width: 1200px;
-  margin: 0 auto;
-  background-color: #fff;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-h1 {
-  text-align: center;
-  margin-bottom: 20px;
-  font-size: 2rem;
-  color: #333;
-}
-
-#cart-list {
-  list-style: none;
-  padding: 0;
-}
-
-#cart-list li {
+/* Navbar */
+nav {
+  background-color: #f8f9fa;
+  padding: 1rem 2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #ecf0f1;
-  padding: 15px;
-  margin-bottom: 10px;
-  border-radius: 5px;
-  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid #ddd;
 }
 
-#cart-list li button {
-  background-color: #e74c3c;
-  border: none;
-  color: white;
-  padding: 8px 15px;
-  font-size: 14px;
-  cursor: pointer;
-  border-radius: 5px;
-  transition: background-color 0.3s;
+nav a {
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+  margin: 0 10px;
+  transition: color 0.3s ease;
 }
 
-#cart-list li button:hover {
-  background-color: #c0392b;
+nav a:hover {
+  color: #007bff;
 }
 
-#total-price {
-  font-size: 1.5rem;
-  font-weight: bold;
-  text-align: right;
-  margin-top: 20px;
+/* Main container */
+main {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+h1 {
+  margin-bottom: 1.5rem;
+  font-size: 28px;
   color: #333;
 }
 
-button {
-  background-color: #2ecc71;
+/* Giỏ hàng */
+#cart-list {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 2rem;
+}
+
+.cart-item {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  border-bottom: 1px solid #eee;
+}
+
+.cart-item img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-right: 1rem;
+}
+
+.cart-item .info {
+  flex-grow: 1;
+}
+
+.cart-item h3 {
+  font-size: 18px;
+  color: #222;
+}
+
+.cart-item p {
+  font-size: 15px;
+  color: #666;
+  margin-top: 4px;
+}
+
+/* Xoá nút */
+.remove-button {
+  background-color: #ff4d4f;
   color: white;
-  font-size: 16px;
-  padding: 10px 20px;
   border: none;
-  border-radius: 5px;
-  width: 100%;
-  margin-top: 20px;
+  padding: 8px 12px;
+  border-radius: 6px;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: background-color 0.3s ease;
 }
 
-button:hover {
-  background-color: #27ae60;
+.remove-button:hover {
+  background-color: #e60023;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-  main {
-    padding: 15px;
-  }
-
-  header nav a {
-    font-size: 16px;
-  }
-
-  #cart-list li {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  #cart-list li button {
-    margin-top: 10px;
-  }
-
-  #total-price {
-    font-size: 1.2rem;
-    text-align: left;
-  }
+/* Tổng tiền */
+#total-price {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  text-align: right;
 }
 
-@media (max-width: 480px) {
-  h1 {
-    font-size: 1.5rem;
-  }
+/* Nút mua hàng */
+#checkout-btn {
+  display: block;
+  margin-left: auto;
+  padding: 10px 20px;
+  background-color: #28a745;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
 
-  button {
-    font-size: 14px;
-    padding: 8px 16px;
-  }
+#checkout-btn:hover {
+  background-color: #218838;
 }
