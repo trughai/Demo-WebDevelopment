@@ -1,6 +1,6 @@
 import { db } from "./firebase-config.js";
-import { collection, getDocs } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
-import { addToCart } from "./cart.js"; // Import hàm addToCart từ cart.js
+import { collection, getDocs } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+import { addToCart } from "./cart.js"; // Đảm bảo đã import đúng hàm addToCart từ cart.js
 
 document.addEventListener("DOMContentLoaded", async () => {
   const productList = document.getElementById("product-list");

@@ -1,40 +1,24 @@
 import { db } from "./firebase-config.js";
-import { doc, setDoc, updateDoc, arrayUnion, getDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+import { doc, updateDoc, arrayUnion, arrayRemove, getDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+
+// Lấy user đã đăng nhập
+const auth = getAuth();
+const user = auth.currentUser;
 
 // Thêm sản phẩm vào giỏ hàng
-export async function addToCart(id, name, price, imageUrl) {
-  const user = firebase.auth().currentUser;
-
+async function addToCart(productId) {
   if (user) {
-    const cartRef = doc(db, "carts", user.uid); // Truy cập giỏ hàng của người dùng
+    const userRef = doc(db, "users", user.uid); // Truy cập tài liệu người dùng
 
     try {
-      const cartDoc = await getDoc(cartRef);
-
-      // Nếu giỏ hàng tồn tại, cập nhật giỏ hàng
-      if (cartDoc.exists()) {
-        const cartData = cartDoc.data();
-        const product = { id, name, price, imageUrl, quantity: 1 }; // Tạo đối tượng sản phẩm
-
-        // Kiểm tra xem sản phẩm đã có trong giỏ hàng chưa
-        const existingProduct = cartData.items.find(item => item.id === id);
-        if (existingProduct) {
-          alert("Sản phẩm đã có trong giỏ hàng!");
-        } else {
-          // Cập nhật giỏ hàng với sản phẩm mới
-          await updateDoc(cartRef, {
-            items: arrayUnion(product) // Thêm sản phẩm vào mảng giỏ hàng
-          });
-          alert("Thêm vào giỏ hàng thành công!");
-        }
-      } else {
-        // Nếu giỏ hàng chưa tồn tại, tạo giỏ hàng mới
-        const newCart = { items: [{ id, name, price, imageUrl, quantity: 1 }] };
-        await setDoc(cartRef, newCart);
-        alert("Thêm vào giỏ hàng thành công!");
-      }
+      // Cập nhật giỏ hàng của người dùng bằng cách thêm ID sản phẩm vào
+      await updateDoc(userRef, {
+        cart: arrayUnion(productId) // Thêm sản phẩm vào giỏ hàng
+      });
+      alert("Sản phẩm đã được thêm vào giỏ hàng!");
     } catch (err) {
-      console.error("Lỗi thêm vào giỏ hàng:", err);
+      console.error("Lỗi khi thêm sản phẩm vào giỏ hàng:", err);
       alert("Có lỗi xảy ra khi thêm sản phẩm vào giỏ hàng.");
     }
   } else {
@@ -42,61 +26,89 @@ export async function addToCart(id, name, price, imageUrl) {
   }
 }
 
-// Hiển thị giỏ hàng
-export async function getCartItems() {
-  const user = firebase.auth().currentUser;
-
+// Xoá sản phẩm khỏi giỏ hàng
+async function removeFromCart(productId) {
   if (user) {
-    const cartRef = doc(db, "carts", user.uid); // Truy cập giỏ hàng của người dùng
-    try {
-      const cartDoc = await getDoc(cartRef);
+    const userRef = doc(db, "users", user.uid); // Truy cập tài liệu người dùng
 
-      if (cartDoc.exists()) {
-        const cartData = cartDoc.data();
-        displayCartItems(cartData.items); // Hiển thị giỏ hàng
+    try {
+      // Cập nhật giỏ hàng của người dùng bằng cách xoá ID sản phẩm khỏi giỏ hàng
+      await updateDoc(userRef, {
+        cart: arrayRemove(productId) // Xoá sản phẩm khỏi giỏ hàng
+      });
+      alert("Sản phẩm đã được xoá khỏi giỏ hàng!");
+      displayCart(); // Cập nhật lại giỏ hàng hiển thị trên trang
+    } catch (err) {
+      console.error("Lỗi khi xoá sản phẩm khỏi giỏ hàng:", err);
+      alert("Có lỗi xảy ra khi xoá sản phẩm khỏi giỏ hàng.");
+    }
+  } else {
+    alert("Bạn cần đăng nhập để xoá sản phẩm khỏi giỏ hàng.");
+  }
+}
+
+// Xoá tất cả sản phẩm trong giỏ hàng khi mua hàng
+async function checkout() {
+  if (user) {
+    const userRef = doc(db, "users", user.uid); // Truy cập tài liệu người dùng
+
+    try {
+      // Cập nhật giỏ hàng của người dùng bằng cách xoá hết sản phẩm
+      await updateDoc(userRef, {
+        cart: [] // Xoá tất cả sản phẩm khỏi giỏ hàng
+      });
+      alert("Bạn đã mua hàng thành công!");
+    } catch (err) {
+      console.error("Lỗi khi thanh toán:", err);
+      alert("Có lỗi xảy ra khi thanh toán.");
+    }
+  } else {
+    alert("Bạn cần đăng nhập để thanh toán.");
+  }
+}
+
+// Hiển thị giỏ hàng của người dùng
+async function displayCart() {
+  if (user) {
+    const userRef = doc(db, "users", user.uid); // Truy cập tài liệu người dùng
+
+    try {
+      const userDoc = await getDoc(userRef);
+
+      if (userDoc.exists()) {
+        const cartItems = userDoc.data().cart; // Lấy giỏ hàng của người dùng
+
+        const cartList = document.getElementById("cart-list");
+        cartList.innerHTML = ''; // Xoá danh sách giỏ hàng hiện tại
+
+        // Lấy thông tin sản phẩm từ Firestore
+        for (const itemId of cartItems) {
+          const productRef = doc(db, "products", itemId); // Truy cập sản phẩm từ Firestore
+          const productDoc = await getDoc(productRef);
+
+          if (productDoc.exists()) {
+            const product = productDoc.data();
+            const li = document.createElement("li");
+            li.textContent = `Sản phẩm: ${product.name}, Giá: ${product.price} đ`; // Hiển thị tên và giá sản phẩm
+
+            const removeButton = document.createElement("button");
+            removeButton.textContent = "Xoá";
+            removeButton.onclick = () => removeFromCart(itemId);
+
+            li.appendChild(removeButton);
+            cartList.appendChild(li);
+          }
+        }
       } else {
         console.log("Giỏ hàng trống");
       }
     } catch (err) {
-      console.error("Lỗi tải giỏ hàng:", err);
+      console.error("Lỗi khi tải giỏ hàng:", err);
     }
   } else {
     console.log("Chưa đăng nhập!");
   }
 }
 
-// Hiển thị sản phẩm trong giỏ hàng
-function displayCartItems(items) {
-  const cartList = document.getElementById("cart-list");
-  const totalPriceElem = document.getElementById("total-price");
-  let totalPrice = 0;
-
-  cartList.innerHTML = ''; // Xóa danh sách giỏ hàng hiện tại
-
-  items.forEach(item => {
-    const li = document.createElement("li");
-    li.classList.add("cart-item");
-
-    li.innerHTML = `
-      <div class="cart-item-details">
-        <img src="${item.imageUrl}" alt="${item.name}" />
-        <div class="cart-item-info">
-          <h3>${item.name}</h3>
-          <p>Giá: ${item.price}₫</p>
-          <p>Số lượng: ${item.quantity}</p>
-        </div>
-      </div>
-      <div class="cart-item-actions">
-        <button class="remove-item" onclick="removeFromCart('${item.id}')">Xóa</button>
-      </div>
-    `;
-
-    cartList.appendChild(li);
-    totalPrice += item.price * item.quantity; // Cập nhật tổng tiền
-  });
-
-  totalPriceElem.textContent = `Tổng tiền: ${totalPrice}₫`;
-}
-
-// Lấy giỏ hàng khi trang được tải
-window.onload = getCartItems;
+// Gọi hàm khi trang được tải
+window.onload = displayCart;
