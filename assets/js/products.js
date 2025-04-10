@@ -1,52 +1,53 @@
-import { db } from "./firebase-config.js";
-import { collection, getDocs } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+import { auth, db } from "./firebase-config.js";
+import { collection, getDocs } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+import { doc, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
-// Hiển thị danh sách sản phẩm
+// Lấy danh sách sản phẩm và hiển thị trên trang
 async function displayProducts() {
-  const productsCollection = collection(db, "products"); // Truy cập collection sản phẩm
-  const productList = document.getElementById("product-list");
+  const productsCollection = collection(db, "products");
+  const productList = document.getElementById("product-list-ul");
 
   try {
-    // Lấy tất cả sản phẩm từ Firestore
     const querySnapshot = await getDocs(productsCollection);
-    querySnapshot.forEach((doc) => {
-      const product = doc.data();
-      const productElement = document.createElement("div");
+    querySnapshot.forEach((docSnap) => {
+      const product = docSnap.data();
+      const productElement = document.createElement("li");
       productElement.classList.add("product");
 
       productElement.innerHTML = `
-        <img src="${product.imageUrl}" alt="${product.name}" class="product-image"/>
-        <h2>${product.name}</h2>
-        <p>Giá: ${product.price} đ</p>
-        <button onclick="addToCart('${doc.id}')">Thêm vào giỏ hàng</button>
+        <img src="${product.imageUrl}" alt="${product.name}" class="product-image" />
+        <h3>${product.name}</h3>
+        <p>Price: ${Number(product.price).toLocaleString("vi-VN")} ₫</p>
+        <button onclick="addToCart('${docSnap.id}')">Add to Cart</button>
       `;
 
       productList.appendChild(productElement);
     });
   } catch (err) {
-    console.error("Lỗi khi lấy danh sách sản phẩm:", err);
+    console.error("Error getting products:", err);
   }
 }
 
 // Thêm sản phẩm vào giỏ hàng
 async function addToCart(productId) {
-  // Cần đảm bảo người dùng đã đăng nhập
-  const user = firebase.auth().currentUser;
+  const auth = getAuth();
+  const user = auth.currentUser;
+
   if (user) {
-    const userRef = doc(db, "users", user.uid); // Truy cập tài liệu người dùng
+    const userRef = doc(db, "users", user.uid);
 
     try {
-      // Cập nhật giỏ hàng của người dùng bằng cách thêm ID sản phẩm vào
       await updateDoc(userRef, {
-        cart: arrayUnion(productId) // Thêm sản phẩm vào giỏ hàng
+        cart: arrayUnion(productId) // Thêm ID sản phẩm vào giỏ hàng
       });
-      alert("Sản phẩm đã được thêm vào giỏ hàng!");
+      alert("Product added to your cart!");
     } catch (err) {
-      console.error("Lỗi khi thêm sản phẩm vào giỏ hàng:", err);
-      alert("Có lỗi xảy ra khi thêm sản phẩm vào giỏ hàng.");
+      console.error("Error adding product to cart:", err);
+      alert("There was an error adding the product to the cart.");
     }
   } else {
-    alert("Bạn cần đăng nhập để thêm sản phẩm vào giỏ hàng.");
+    alert("Please log in to add products to your cart.");
   }
 }
 

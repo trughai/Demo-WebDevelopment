@@ -1,27 +1,23 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Danh mục sản phẩm</title>
-  <link rel="stylesheet" href="assets/css/products.css" />
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
-  <script src="assets/js/products.js" type="module"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Product List</title>
+  <link rel="stylesheet" href="assets/css/common.css" />
+  <script src="https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js"></script>
+  <script type="module" src="assets/js/products.js"></script>
 </head>
 <body>
-  <header>
-    <nav>
-      <a href="index.html">Trang chủ</a>
-      <a href="cart.html">Giỏ hàng</a>
-      <button id="logout-btn">Đăng xuất</button>
-    </nav>
-  </header>
+  <div class="container">
+    <h2>Product List</h2>
 
-  <main>
-    <h1>Danh mục sản phẩm</h1>
-    <div id="product-list"></div> <!-- Danh sách sản phẩm sẽ hiển thị ở đây -->
-  </main>
+    <!-- Hiển thị danh sách sản phẩm -->
+    <div id="product-list">
+      <ul id="product-list-ul"></ul>
+    </div>
+  </div>
 </body>
 </html>

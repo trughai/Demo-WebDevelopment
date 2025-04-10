@@ -17,6 +17,7 @@ async function addToCart(productId) {
         cart: arrayUnion(productId) // Thêm sản phẩm vào giỏ hàng
       });
       alert("Sản phẩm đã được thêm vào giỏ hàng!");
+      displayCart();  // Cập nhật lại giỏ hàng khi thêm sản phẩm
     } catch (err) {
       console.error("Lỗi khi thêm sản phẩm vào giỏ hàng:", err);
       alert("Có lỗi xảy ra khi thêm sản phẩm vào giỏ hàng.");
@@ -58,6 +59,7 @@ async function checkout() {
         cart: [] // Xoá tất cả sản phẩm khỏi giỏ hàng
       });
       alert("Bạn đã mua hàng thành công!");
+      displayCart();  // Cập nhật lại giỏ hàng
     } catch (err) {
       console.error("Lỗi khi thanh toán:", err);
       alert("Có lỗi xảy ra khi thanh toán.");
@@ -80,6 +82,7 @@ async function displayCart() {
 
         const cartList = document.getElementById("cart-list");
         cartList.innerHTML = ''; // Xoá danh sách giỏ hàng hiện tại
+        let totalPrice = 0;  // Khởi tạo tổng tiền
 
         // Lấy thông tin sản phẩm từ Firestore
         for (const itemId of cartItems) {
@@ -89,7 +92,7 @@ async function displayCart() {
           if (productDoc.exists()) {
             const product = productDoc.data();
             const li = document.createElement("li");
-            li.textContent = `Sản phẩm: ${product.name}, Giá: ${product.price} đ`; // Hiển thị tên và giá sản phẩm
+            li.textContent = `Sản phẩm: ${product.name}, Giá: ${product.price.toLocaleString("vi-VN")} đ`; // Hiển thị tên và giá sản phẩm
 
             const removeButton = document.createElement("button");
             removeButton.textContent = "Xoá";
@@ -97,16 +100,27 @@ async function displayCart() {
 
             li.appendChild(removeButton);
             cartList.appendChild(li);
+
+            // Cộng dồn giá trị tổng tiền
+            totalPrice += product.price;
           }
         }
+
+        // Hiển thị tổng tiền giỏ hàng
+        const totalPriceElement = document.getElementById("total-price");
+        totalPriceElement.textContent = `Tổng tiền: ${totalPrice.toLocaleString("vi-VN")} đ`;
       } else {
         console.log("Giỏ hàng trống");
+        document.getElementById("cart-list").innerHTML = "<li>Giỏ hàng trống</li>";
+        document.getElementById("total-price").textContent = "Tổng tiền: 0 đ";
       }
     } catch (err) {
       console.error("Lỗi khi tải giỏ hàng:", err);
     }
   } else {
     console.log("Chưa đăng nhập!");
+    document.getElementById("cart-list").innerHTML = "<li>Vui lòng đăng nhập để xem giỏ hàng</li>";
+    document.getElementById("total-price").textContent = "Tổng tiền: 0 đ";
   }
 }
 
