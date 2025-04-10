@@ -1,7 +1,13 @@
 import { auth, db } from "./firebase-config.js";
-import { collection, getDocs } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+import {
+  collection,
+  getDocs,
+  addDoc,
+  updateDoc,
+  doc,
+  arrayUnion,
+} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 import { getAuth } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
-import { doc, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
 // Thêm sản phẩm vào giỏ hàng
 async function addToCart(productId) {
@@ -13,7 +19,7 @@ async function addToCart(productId) {
 
     try {
       await updateDoc(userRef, {
-        cart: arrayUnion(productId) // Thêm ID sản phẩm vào giỏ hàng
+        cart: arrayUnion(productId), // Thêm ID sản phẩm vào giỏ hàng
       });
       alert("Product added to your cart!");
     } catch (err) {
@@ -58,6 +64,30 @@ async function displayProducts() {
   }
 }
 
+// ✅ Thêm hàm tạo sản phẩm mới và tự động gán idproduct
+async function addNewProduct({ name, price, imageUrl }) {
+  try {
+    const docRef = await addDoc(collection(db, "products"), {
+      name,
+      price,
+      imageUrl,
+    });
+
+    // Sau khi thêm, cập nhật lại chính document để thêm idproduct
+    await updateDoc(doc(db, "products", docRef.id), {
+      idproduct: docRef.id,
+    });
+
+    console.log("Đã thêm sản phẩm với idproduct:", docRef.id);
+    alert("Sản phẩm đã được thêm!");
+  } catch (error) {
+    console.error("Lỗi khi thêm sản phẩm:", error);
+    alert("Lỗi khi thêm sản phẩm.");
+  }
+}
 
 // Gọi hàm khi trang được tải
 window.onload = displayProducts;
+
+// 👉 Export nếu bạn muốn dùng addNewProduct từ file khác
+export { addNewProduct };
