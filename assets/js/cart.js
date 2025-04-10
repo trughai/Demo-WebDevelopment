@@ -11,7 +11,6 @@ import {
   onAuthStateChanged,
 } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
 
-
 const auth = getAuth();
 let currentUser = null;
 
@@ -116,5 +115,5 @@ async function checkout() {
   }
 }
 
-// Cho HTML gọi được hàm
+// ✅ Cho HTML gọi được hàm thanh toán
 window.checkout = checkout;
