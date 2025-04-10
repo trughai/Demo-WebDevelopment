@@ -1,108 +1,60 @@
-/* Tương tự như CSS trong cart.css, nhưng dành riêng cho danh mục sản phẩm */
-body {
-  background-color: #f4f7fa;
-  font-family: Arial, sans-serif;
-}
-
-header {
-  background-color: #3498db;
-  padding: 10px 0;
-  text-align: center;
-}
-
-header nav a {
-  color: #fff;
-  text-decoration: none;
-  font-size: 18px;
-  margin: 0 15px;
-  padding: 10px;
-  transition: background-color 0.3s;
-}
-
-header nav a:hover {
-  background-color: #2980b9;
-}
-
-header nav button {
-  padding: 10px 20px;
-  border: none;
-  background-color: #e74c3c;
-  color: white;
-  font-size: 16px;
-  cursor: pointer;
-  border-radius: 5px;
-  transition: background-color 0.3s;
-}
-
-header nav button:hover {
-  background-color: #c0392b;
-}
-
-main {
-  padding: 20px;
-  max-width: 1200px;
-  margin: 0 auto;
-  background-color: #fff;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-h1 {
-  text-align: center;
-  margin-bottom: 20px;
-  font-size: 2rem;
-}
-
-#product-list {
+/* Navbar style */
+nav {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: space-around;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #f8f9fa;
+  padding: 10px 20px;
 }
 
-.product {
-  background-color: #ecf0f1;
-  padding: 15px;
-  margin: 15px;
-  width: 250px;
-  border-radius: 5px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  text-align: center;
-}
-
-.product img {
-  width: 100%;
-  height: auto;
-  border-radius: 5px;
-}
-
-.product h2 {
-  font-size: 1.2rem;
-  margin-top: 10px;
-}
-
-.product button {
-  background-color: #2ecc71;
-  color: white;
+nav a {
+  text-decoration: none;
+  color: #333;
   font-size: 16px;
   padding: 10px;
-  border: none;
   border-radius: 5px;
-  width: 100%;
-  margin-top: 10px;
-  cursor: pointer;
   transition: background-color 0.3s;
 }
 
-.product button:hover {
-  background-color: #27ae60;
+nav a:hover {
+  background-color: #007bff;
+  color: white;
 }
 
-@media (max-width: 768px) {
-  #product-list {
-    flex-direction: column;
-    align-items: center;
-  }
+.container {
+  padding: 20px;
+}
 
-  .product {
-    width: 80%;
-  }
+h2 {
+  text-align: center;
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+#product-list ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+#product-list li {
+  border: 1px solid #ddd;
+  padding: 15px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#product-list li button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+#product-list li button:hover {
+  background-color: #0056b3;
 }
