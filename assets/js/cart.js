@@ -30,32 +30,44 @@ async function displayCart() {
       cartList.innerHTML = '';
       let totalPrice = 0;
 
+      if (cartItems.length === 0) {
+        cartList.innerHTML = "<li>Giỏ hàng trống</li>";
+        document.getElementById("total-price").textContent = "Tổng tiền: 0 đ";
+        return;
+      }
+
       for (const productId of cartItems) {
-        const productRef = doc(db, "products", productId);
-        const productDoc = await getDoc(productRef);
+        try {
+          const productRef = doc(db, "products", productId);
+          const productDoc = await getDoc(productRef);
 
-        if (productDoc.exists()) {
-          const product = productDoc.data();
-          const li = document.createElement("li");
-          li.classList.add("cart-item");
+          if (productDoc.exists()) {
+            const product = productDoc.data();
+            const li = document.createElement("li");
+            li.classList.add("cart-item");
 
-          li.innerHTML = `
-            <img src="${product.imageUrl}" alt="${product.name}" width="80" />
-            <div class="info">
-              <h3>${product.name}</h3>
-              <p>Giá: ${product.price.toLocaleString("vi-VN")} đ</p>
-            </div>
-          `;
+            li.innerHTML = `
+              <img src="${product.imageUrl}" alt="${product.name}" width="80" />
+              <div class="info">
+                <h3>${product.name}</h3>
+                <p>Giá: ${Number(product.price).toLocaleString("vi-VN")} đ</p>
+              </div>
+            `;
 
-          const removeButton = document.createElement("button");
-          removeButton.textContent = "Xoá";
-          removeButton.classList.add("remove-button");
-          removeButton.onclick = () => removeFromCart(productId);
+            const removeButton = document.createElement("button");
+            removeButton.textContent = "Xoá";
+            removeButton.classList.add("remove-button");
+            removeButton.onclick = () => removeFromCart(productId);
 
-          li.appendChild(removeButton);
-          cartList.appendChild(li);
+            li.appendChild(removeButton);
+            cartList.appendChild(li);
 
-          totalPrice += product.price;
+            totalPrice += Number(product.price);
+          } else {
+            console.warn(`Không tìm thấy sản phẩm với ID: ${productId}`);
+          }
+        } catch (err) {
+          console.error(`Lỗi khi lấy thông tin sản phẩm ${productId}:`, err);
         }
       }
 
