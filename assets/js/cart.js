@@ -1,10 +1,16 @@
 import { db } from "./firebase-config.js";
 import {
-  doc, updateDoc, arrayUnion, arrayRemove, getDoc
-} from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+  doc,
+  updateDoc,
+  arrayUnion,
+  arrayRemove,
+  getDoc,
+} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 import {
-  getAuth, onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+  getAuth,
+  onAuthStateChanged,
+} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+
 
 const auth = getAuth();
 let currentUser = null;
@@ -15,7 +21,8 @@ onAuthStateChanged(auth, (user) => {
     currentUser = user;
     displayCart(); // Gọi khi đã đăng nhập
   } else {
-    document.getElementById("cart-list").innerHTML = "<li>Vui lòng đăng nhập để xem giỏ hàng</li>";
+    document.getElementById("cart-list").innerHTML =
+      "<li>Vui lòng đăng nhập để xem giỏ hàng</li>";
     document.getElementById("total-price").textContent = "Tổng tiền: 0 đ";
   }
 });
@@ -26,8 +33,10 @@ async function displayCart() {
     const userDoc = await getDoc(userRef);
     if (userDoc.exists()) {
       const cartItems = userDoc.data().cart || [];
+      console.log("🛒 Danh sách ID sản phẩm trong giỏ hàng:", cartItems);
+
       const cartList = document.getElementById("cart-list");
-      cartList.innerHTML = '';
+      cartList.innerHTML = "";
       let totalPrice = 0;
 
       if (cartItems.length === 0) {
@@ -43,6 +52,8 @@ async function displayCart() {
 
           if (productDoc.exists()) {
             const product = productDoc.data();
+            console.log("✅ Tìm thấy sản phẩm:", product);
+
             const li = document.createElement("li");
             li.classList.add("cart-item");
 
@@ -64,10 +75,10 @@ async function displayCart() {
 
             totalPrice += Number(product.price);
           } else {
-            console.warn(`Không tìm thấy sản phẩm với ID: ${productId}`);
+            console.warn(`⚠️ Không tìm thấy sản phẩm với ID: ${productId}`);
           }
         } catch (err) {
-          console.error(`Lỗi khi lấy thông tin sản phẩm ${productId}:`, err);
+          console.error(`❌ Lỗi khi lấy thông tin sản phẩm ${productId}:`, err);
         }
       }
 
@@ -75,7 +86,7 @@ async function displayCart() {
         `Tổng tiền: ${totalPrice.toLocaleString("vi-VN")} đ`;
     }
   } catch (err) {
-    console.error("Lỗi khi tải giỏ hàng:", err);
+    console.error("❌ Lỗi khi tải giỏ hàng:", err);
   }
 }
 
@@ -88,7 +99,7 @@ async function removeFromCart(productId) {
     alert("Sản phẩm đã được xoá khỏi giỏ hàng!");
     displayCart(); // Refresh lại
   } catch (err) {
-    console.error("Lỗi khi xoá sản phẩm:", err);
+    console.error("❌ Lỗi khi xoá sản phẩm:", err);
   }
 }
 
@@ -101,7 +112,7 @@ async function checkout() {
     alert("Bạn đã mua hàng thành công!");
     displayCart();
   } catch (err) {
-    console.error("Lỗi khi thanh toán:", err);
+    console.error("❌ Lỗi khi thanh toán:", err);
   }
 }
 
