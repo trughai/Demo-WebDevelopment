@@ -1,10 +1,5 @@
 import { db } from "./firebase-config.js";
 import { collection, getDocs } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
-import { getAuth } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
-
-// Lấy user đã đăng nhập
-const auth = getAuth();
-const user = auth.currentUser;
 
 // Hiển thị danh sách sản phẩm
 async function displayProducts() {
@@ -35,6 +30,8 @@ async function displayProducts() {
 
 // Thêm sản phẩm vào giỏ hàng
 async function addToCart(productId) {
+  // Cần đảm bảo người dùng đã đăng nhập
+  const user = firebase.auth().currentUser;
   if (user) {
     const userRef = doc(db, "users", user.uid); // Truy cập tài liệu người dùng
 
