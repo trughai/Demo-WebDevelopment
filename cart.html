@@ -6,10 +6,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Giỏ hàng</title>
   <link rel="stylesheet" href="assets/css/cart.css" />
-  <!-- Dùng đúng phiên bản Firebase 11.6.0 -->
+  <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js"></script>
   <script src="https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js"></script>
+  <!-- Script chính -->
   <script type="module" src="assets/js/cart.js"></script>
 </head>
 <body>
@@ -26,5 +27,17 @@
     <div id="total-price">Tổng tiền: 0 đ</div>
     <button id="checkout-btn">Mua hàng</button>
   </main>
+
+  <!-- Thêm đoạn này để bắt sự kiện nút "Mua hàng" -->
+  <script type="module">
+    import { checkout } from './assets/js/cart.js';
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const btn = document.getElementById("checkout-btn");
+      if (btn) {
+        btn.addEventListener("click", checkout);
+      }
+    });
+  </script>
 </body>
 </html>

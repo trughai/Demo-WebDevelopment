@@ -115,5 +115,5 @@ async function checkout() {
   }
 }
 
-// ✅ Cho HTML gọi được hàm thanh toán
-window.checkout = checkout;
+// ✅ Cho HTML import được hàm checkout
+export { checkout };
