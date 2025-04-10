@@ -1,61 +1,67 @@
-import { db } from "./firebase-config.js";
+// cart.js
+import { auth, db } from "./firebase-config.js";
 import {
-  doc, updateDoc, arrayUnion, arrayRemove, getDoc
-} from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+  doc,
+  updateDoc,
+  arrayRemove,
+  getDoc
+} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 import {
-  getAuth, onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+  getAuth,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
 
-const auth = getAuth();
+const cartList = document.getElementById("cart-list");
+const totalPriceEl = document.getElementById("total-price");
+const checkoutBtn = document.getElementById("checkout-btn");
+
 let currentUser = null;
 
-// Theo dõi trạng thái đăng nhập
 onAuthStateChanged(auth, (user) => {
   if (user) {
     currentUser = user;
-    displayCart(); // Chỉ gọi khi user đã xác thực xong
+    displayCart();
   } else {
-    document.getElementById("cart-list").innerHTML = "<li>Vui lòng đăng nhập để xem giỏ hàng</li>";
-    document.getElementById("total-price").textContent = "Tổng tiền: 0 đ";
+    cartList.innerHTML = "<li>Vui lòng đăng nhập để xem giỏ hàng</li>";
+    totalPriceEl.textContent = "Tổng tiền: 0 đ";
   }
 });
 
 async function displayCart() {
   const userRef = doc(db, "users", currentUser.uid);
-  try {
-    const userDoc = await getDoc(userRef);
-    if (userDoc.exists()) {
-      const cartItems = userDoc.data().cart || [];
-      const cartList = document.getElementById("cart-list");
-      cartList.innerHTML = '';
-      let totalPrice = 0;
+  const userDoc = await getDoc(userRef);
 
-      for (const itemId of cartItems) {
-        const productRef = doc(db, "products", itemId);
-        const productDoc = await getDoc(productRef);
+  if (!userDoc.exists()) return;
 
-        if (productDoc.exists()) {
-          const product = productDoc.data();
-          const li = document.createElement("li");
-          li.textContent = `Sản phẩm: ${product.name}, Giá: ${product.price.toLocaleString("vi-VN")} đ`;
+  const cartItems = userDoc.data().cart || [];
+  cartList.innerHTML = "";
+  let total = 0;
 
-          const removeButton = document.createElement("button");
-          removeButton.textContent = "Xoá";
-          removeButton.onclick = () => removeFromCart(itemId);
+  for (const itemId of cartItems) {
+    const productRef = doc(db, "products", itemId);
+    const productDoc = await getDoc(productRef);
 
-          li.appendChild(removeButton);
-          cartList.appendChild(li);
-
-          totalPrice += product.price;
-        }
-      }
-
-      document.getElementById("total-price").textContent =
-        `Tổng tiền: ${totalPrice.toLocaleString("vi-VN")} đ`;
+    if (productDoc.exists()) {
+      const product = productDoc.data();
+      const li = document.createElement("li");
+      li.innerHTML = `
+        <strong>${product.name}</strong> - ${product.price.toLocaleString("vi-VN")} đ
+        <button class="remove-btn" data-id="${itemId}">Xoá</button>
+      `;
+      cartList.appendChild(li);
+      total += product.price;
     }
-  } catch (err) {
-    console.error("Lỗi khi tải giỏ hàng:", err);
   }
+
+  totalPriceEl.textContent = `Tổng tiền: ${total.toLocaleString("vi-VN")} đ`;
+
+  // Gắn sự kiện xoá sau khi render xong
+  document.querySelectorAll(".remove-btn").forEach((btn) => {
+    btn.addEventListener("click", async (e) => {
+      const productId = e.target.dataset.id;
+      await removeFromCart(productId);
+    });
+  });
 }
 
 async function removeFromCart(productId) {
@@ -64,14 +70,14 @@ async function removeFromCart(productId) {
     await updateDoc(userRef, {
       cart: arrayRemove(productId),
     });
-    alert("Sản phẩm đã được xoá khỏi giỏ hàng!");
+    alert("Đã xoá sản phẩm khỏi giỏ hàng.");
     displayCart();
   } catch (err) {
     console.error("Lỗi khi xoá sản phẩm:", err);
   }
 }
 
-async function checkout() {
+checkoutBtn.addEventListener("click", async () => {
   const userRef = doc(db, "users", currentUser.uid);
   try {
     await updateDoc(userRef, {
@@ -82,7 +88,4 @@ async function checkout() {
   } catch (err) {
     console.error("Lỗi khi thanh toán:", err);
   }
-}
-
-// Gắn hàm mua hàng vào window để HTML gọi được
-window.checkout = checkout;
+});
